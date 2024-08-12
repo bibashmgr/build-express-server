@@ -38,6 +38,14 @@ export const getUser = catchAsync(
   }
 );
 
+export const getMyProfile = catchAsync(
+  async (req: express.Request, res: express.Response) => {
+    res
+      .status(httpStatus.OK)
+      .send(successHandler(req.user, "Fetch my profile"));
+  }
+);
+
 export const updateUser = catchAsync(
   async (req: express.Request, res: express.Response) => {
     const user = await userService.updateUserById(req.params.userId, req.body);

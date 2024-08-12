@@ -24,6 +24,8 @@ router
     userController.getUsers
   );
 
+router.route("/me").get(authenticate(), userController.getMyProfile);
+
 router
   .route("/:userId")
   .get(
