@@ -77,7 +77,7 @@ export const generateResetPasswordOtp = async (email: string) => {
     "minutes"
   );
   const resetPasswordOtp = generateOtp();
-  await saveOtp(resetPasswordOtp, user._id, otpTypes.RESET_PASSWORD, expires);
+  await saveOtp(resetPasswordOtp, user.id, otpTypes.RESET_PASSWORD, expires);
 
   return resetPasswordOtp;
 };
@@ -93,7 +93,7 @@ export const generateVerifyEmailOtp = async (user: IUser) => {
     "minutes"
   );
   const verifyEmailOtp = generateOtp();
-  await saveOtp(verifyEmailOtp, user._id, otpTypes.VERIFY_EMAIL, expires);
+  await saveOtp(verifyEmailOtp, user.id, otpTypes.VERIFY_EMAIL, expires);
 
   return verifyEmailOtp;
 };

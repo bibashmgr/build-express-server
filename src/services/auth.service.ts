@@ -66,7 +66,7 @@ export const resetPassword = async (
   }
 
   const resetPasswordOtpDoc = await otpService.verifyOtp(
-    user._id,
+    user.id,
     resetPasswordOtp,
     otpTypes.RESET_PASSWORD
   );
@@ -86,12 +86,12 @@ export const resetPassword = async (
 
 export const verifyEmail = async (user: IUser, verifyEmailOtp: number) => {
   const verifyEmailOtpDoc = await otpService.verifyOtp(
-    user._id,
+    user.id,
     verifyEmailOtp,
     otpTypes.VERIFY_EMAIL
   );
 
-  await userService.updateUserById(user._id, { isEmailVerified: true });
+  await userService.updateUserById(user.id, { isEmailVerified: true });
   await OTP.deleteMany({
     user: verifyEmailOtpDoc.user,
     type: otpTypes.VERIFY_EMAIL,
