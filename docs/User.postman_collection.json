@@ -1,0 +1,1245 @@
+{
+	"info": {
+		"_postman_id": "fffce613-cfd8-4519-a16f-3ecb76266c2b",
+		"name": "User",
+		"description": "**This collection contain request related to users.**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18987812"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example 1 : Default",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"479-gt0BdAYWojP2AKMgP5K5rWsLqJk\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 17:54:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"results\": [\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"bibashthapamagar21@gmail.com\",\n                \"role\": \"admin\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:46:35.835Z\",\n                \"updatedAt\": \"2023-12-30T11:46:35.835Z\",\n                \"id\": \"6590031bafbc7459f60cde2d\"\n            },\n            {\n                \"name\": \"Ya Mosa\",\n                \"email\": \"yamosa8913@ubinert.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:49:39.847Z\",\n                \"updatedAt\": \"2023-12-30T11:49:39.847Z\",\n                \"id\": \"659003d3afbc7459f60cde32\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"rambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:52:24.835Z\",\n                \"updatedAt\": \"2023-12-30T11:52:24.835Z\",\n                \"id\": \"65900478afbc7459f60cde42\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"shyambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:26:34.168Z\",\n                \"updatedAt\": \"2023-12-30T15:26:34.168Z\",\n                \"id\": \"659036aa50cb7ea76e068c67\"\n            },\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"mail.bibash21@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:33:55.151Z\",\n                \"updatedAt\": \"2023-12-30T15:33:55.151Z\",\n                \"id\": \"659038631c4196f04882379f\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 10,\n        \"totalPages\": 1,\n        \"totalResults\": 5\n    },\n    \"message\": \"Fetch Users\"\n}"
+				},
+				{
+					"name": "Example 2 : Using Limit & Page",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users?limit=5&page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"478-oXrHXBMQePwZFlnFOHnwy/mjzqg\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 17:55:16 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"results\": [\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"bibashthapamagar21@gmail.com\",\n                \"role\": \"admin\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:46:35.835Z\",\n                \"updatedAt\": \"2023-12-30T11:46:35.835Z\",\n                \"id\": \"6590031bafbc7459f60cde2d\"\n            },\n            {\n                \"name\": \"Ya Mosa\",\n                \"email\": \"yamosa8913@ubinert.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:49:39.847Z\",\n                \"updatedAt\": \"2023-12-30T11:49:39.847Z\",\n                \"id\": \"659003d3afbc7459f60cde32\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"rambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:52:24.835Z\",\n                \"updatedAt\": \"2023-12-30T11:52:24.835Z\",\n                \"id\": \"65900478afbc7459f60cde42\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"shyambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:26:34.168Z\",\n                \"updatedAt\": \"2023-12-30T15:26:34.168Z\",\n                \"id\": \"659036aa50cb7ea76e068c67\"\n            },\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"mail.bibash21@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:33:55.151Z\",\n                \"updatedAt\": \"2023-12-30T15:33:55.151Z\",\n                \"id\": \"659038631c4196f04882379f\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 5,\n        \"totalPages\": 1,\n        \"totalResults\": 5\n    },\n    \"message\": \"Fetch Users\"\n}"
+				},
+				{
+					"name": "Example 3 : Using Sorting",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users?sortBy=createdAt:desc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "createdAt:desc"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"479-fi9lfE3oIHsQOZCVD+nJAEJvfS0\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 17:55:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"results\": [\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"mail.bibash21@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:33:55.151Z\",\n                \"updatedAt\": \"2023-12-30T15:33:55.151Z\",\n                \"id\": \"659038631c4196f04882379f\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"shyambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:26:34.168Z\",\n                \"updatedAt\": \"2023-12-30T15:26:34.168Z\",\n                \"id\": \"659036aa50cb7ea76e068c67\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"rambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:52:24.835Z\",\n                \"updatedAt\": \"2023-12-30T11:52:24.835Z\",\n                \"id\": \"65900478afbc7459f60cde42\"\n            },\n            {\n                \"name\": \"Ya Mosa\",\n                \"email\": \"yamosa8913@ubinert.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:49:39.847Z\",\n                \"updatedAt\": \"2023-12-30T11:49:39.847Z\",\n                \"id\": \"659003d3afbc7459f60cde32\"\n            },\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"bibashthapamagar21@gmail.com\",\n                \"role\": \"admin\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:46:35.835Z\",\n                \"updatedAt\": \"2023-12-30T11:46:35.835Z\",\n                \"id\": \"6590031bafbc7459f60cde2d\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 10,\n        \"totalPages\": 1,\n        \"totalResults\": 5\n    },\n    \"message\": \"Fetch Users\"\n}"
+				},
+				{
+					"name": "Example 4 : Using Filtering",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users?role=user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "user"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "927"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"39f-3D2bNMh5r1ZS/TAoYNpbGHQ3eJY\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 17:56:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"results\": [\n            {\n                \"name\": \"Ya Mosa\",\n                \"email\": \"yamosa8913@ubinert.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:49:39.847Z\",\n                \"updatedAt\": \"2023-12-30T11:49:39.847Z\",\n                \"id\": \"659003d3afbc7459f60cde32\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"rambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T11:52:24.835Z\",\n                \"updatedAt\": \"2023-12-30T11:52:24.835Z\",\n                \"id\": \"65900478afbc7459f60cde42\"\n            },\n            {\n                \"name\": \"Ram Bahadur\",\n                \"email\": \"shyambdr@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:26:34.168Z\",\n                \"updatedAt\": \"2023-12-30T15:26:34.168Z\",\n                \"id\": \"659036aa50cb7ea76e068c67\"\n            },\n            {\n                \"name\": \"Bibash Thapa Magar\",\n                \"email\": \"mail.bibash21@gmail.com\",\n                \"role\": \"user\",\n                \"isEmailVerified\": false,\n                \"createdAt\": \"2023-12-30T15:33:55.151Z\",\n                \"updatedAt\": \"2023-12-30T15:33:55.151Z\",\n                \"id\": \"659038631c4196f04882379f\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 10,\n        \"totalPages\": 1,\n        \"totalResults\": 4\n    },\n    \"message\": \"Fetch Users\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Save userId\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"\r",
+							"    pm.globals.set('user_id', res.data.id);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"haribdr@gmail.com\",\r\n    \"password\": \"asdfasdf1\",\r\n    \"name\": \"Hari Bahadur\",\r\n    \"role\": \"user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"shyambdr@gmail.com\",\r\n    \"password\": \"asdfasdf1\",\r\n    \"name\": \"Ram Bahadur\",\r\n    \"role\": \"user\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"b0-VHPmb//2CxUjt8NOYdVRuGO1XhU\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 15:26:34 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"name\": \"Ram Bahadur\",\n        \"email\": \"shyambdr@gmail.com\",\n        \"role\": \"user\",\n        \"isEmailVerified\": false,\n        \"id\": \"659036aa50cb7ea76e068c67\"\n    },\n    \"message\": \"Fetch userInfo\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Single User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/users/{{user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "254"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"fe-oQaThbE5WwLjy/ZAJZtgY6q6Wlk\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 18:04:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"name\": \"Hari Bahadur\",\n        \"email\": \"haribdr@gmail.com\",\n        \"role\": \"user\",\n        \"isEmailVerified\": false,\n        \"createdAt\": \"2023-12-30T18:00:33.653Z\",\n        \"updatedAt\": \"2023-12-30T18:00:33.653Z\",\n        \"id\": \"65905ac1eb52e4624d788523\"\n    },\n    \"message\": \"Fetch userInfo\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get My Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/users/me",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "254"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"fe-oQaThbE5WwLjy/ZAJZtgY6q6Wlk\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 18:04:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"name\": \"Hari Bahadur\",\n        \"email\": \"haribdr@gmail.com\",\n        \"role\": \"user\",\n        \"isEmailVerified\": false,\n        \"createdAt\": \"2023-12-30T18:00:33.653Z\",\n        \"updatedAt\": \"2023-12-30T18:00:33.653Z\",\n        \"id\": \"65905ac1eb52e4624d788523\"\n    },\n    \"message\": \"Fetch userInfo\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Save userId\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"\r",
+							"    pm.globals.set('user_id', res.data.id);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mikebdr@gmail.com\",\r\n    \"name\": \"Mike Bahadur\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/users/{{user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"mikebdr@gmail.com\",\r\n    \"name\": \"Mike Bahadur\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "255"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ff-IubYYnrtk8P+oCNdV1xJuSHoIKI\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 18:06:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"name\": \"Mike Bahadur\",\n        \"email\": \"mikebdr@gmail.com\",\n        \"role\": \"user\",\n        \"isEmailVerified\": false,\n        \"createdAt\": \"2023-12-30T18:00:33.653Z\",\n        \"updatedAt\": \"2023-12-30T18:06:50.005Z\",\n        \"id\": \"65905ac1eb52e4624d788523\"\n    },\n    \"message\": \"Update userInfo\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Remove UserId\", () => {\r",
+							"    pm.globals.unset(\"user_id\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/users/{{user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Example",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Resource-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Origin-Agent-Cluster",
+							"value": "?1"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-DNS-Prefetch-Control",
+							"value": "off"
+						},
+						{
+							"key": "X-Download-Options",
+							"value": "noopen"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Permitted-Cross-Domain-Policies",
+							"value": "none"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "56"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"38-Ok7dDbzUTcA0IUuJ6P9b0tsKQ9o\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Dec 2023 18:08:27 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": null,\n    \"message\": \"Delete user\"\n}"
+				}
+			]
+		}
+	]
+}
