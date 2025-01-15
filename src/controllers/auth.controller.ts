@@ -2,11 +2,6 @@ import express from "express";
 
 import httpStatus from "http-status";
 
-// helpers
-import catchAsync from "../helpers/catchAsync";
-import successHandler from "../helpers/successHandler";
-
-// services
 import {
   userService,
   tokenService,
@@ -15,6 +10,8 @@ import {
   emailService,
 } from "../services";
 import { IUser } from "../models";
+import catchAsync from "../helpers/catchAsync";
+import successHandler from "../helpers/successHandler";
 
 export const register = catchAsync(
   async (req: express.Request, res: express.Response) => {

@@ -1,6 +1,5 @@
 import Joi from "joi";
 
-// validations
 import { objectIdValidation, passwordValidation } from "./custom.validation";
 
 export const createUser = {

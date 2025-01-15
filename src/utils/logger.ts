@@ -1,6 +1,5 @@
 import winston from "winston";
 
-// utils
 import { config } from "../constants/config";
 
 const enumerateErrorFormat = winston.format((info) => {

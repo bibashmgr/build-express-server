@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 
-// constants
-import { otpTypes } from "../constants/schemas";
+import { OtpEnum } from "../types/otp.type";
 
 export interface IOtp extends mongoose.Document {
   code: number;
   user: mongoose.Types.ObjectId;
-  type: otpTypes;
+  type: OtpEnum;
   expires: Date;
 }
 
@@ -22,7 +21,7 @@ const otpSchema = new mongoose.Schema<IOtp>({
   },
   type: {
     type: String,
-    enum: [otpTypes.RESET_PASSWORD, otpTypes.VERIFY_EMAIL],
+    enum: [OtpEnum.RESET_PASSWORD, OtpEnum.VERIFY_EMAIL],
     required: true,
   },
   expires: {

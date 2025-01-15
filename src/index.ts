@@ -1,13 +1,9 @@
 import http from "http";
 import mongoose from "mongoose";
 
-// constants
-import { config } from "./constants/config";
-
-// utils
-import { logger } from "./utils/logger";
-
 import app from "./app";
+import { logger } from "./utils/logger";
+import { config } from "./constants/config";
 
 let server: http.Server;
 

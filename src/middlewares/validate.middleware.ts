@@ -2,7 +2,6 @@ import express from "express";
 import Joi from "joi";
 import httpStatus from "http-status";
 
-// helpers
 import { pick } from "../helpers/pick";
 import ApiError from "../helpers/ApiError";
 

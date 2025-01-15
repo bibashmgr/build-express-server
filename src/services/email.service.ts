@@ -1,11 +1,8 @@
 import moment from "moment";
 import nodemailer from "nodemailer";
 
-// constants
-import { config } from "../constants/config";
-
-// utils
 import { logger } from "../utils/logger";
+import { config } from "../constants/config";
 
 const transport = nodemailer.createTransport(config.email.smtp);
 

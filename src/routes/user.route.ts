@@ -1,13 +1,8 @@
 import express from "express";
 
-// middlewares
-import { authenticate, validate } from "../middlewares";
-
-// validations
 import { userValidation } from "../validations";
-
-// controllers
 import { userController } from "../controllers";
+import { authenticate, validate } from "../middlewares";
 
 const router = express.Router();
 

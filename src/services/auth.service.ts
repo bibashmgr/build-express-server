@@ -1,18 +1,12 @@
 import httpStatus from "http-status";
 
-// helpers
 import ApiError from "../helpers/ApiError";
-
-// services
-import * as tokenService from "./token.service";
-import * as userService from "./user.service";
 import * as otpService from "./otp.service";
-
-// constants
-import { otpTypes, tokenTypes } from "../constants/schemas";
-
-// models
+import { OtpEnum } from "../types/otp.type";
+import * as userService from "./user.service";
 import { IUser, OTP, Token } from "../models";
+import * as tokenService from "./token.service";
+import { TokenEnum } from "../types/token.type";
 
 // This function logins user by email & password
 export const loginUserWithEmailAndPassword = async (
@@ -30,7 +24,7 @@ export const loginUserWithEmailAndPassword = async (
 export const logout = async (refreshToken: string) => {
   const refreshTokenDoc = await Token.findOne({
     token: refreshToken,
-    type: tokenTypes.REFRESH,
+    type: TokenEnum.REFRESH,
     blacklisted: false,
   });
 
@@ -45,7 +39,7 @@ export const logout = async (refreshToken: string) => {
 export const refreshAuth = async (refreshToken: string) => {
   const refreshTokenDoc = await tokenService.verifyToken(
     refreshToken,
-    tokenTypes.REFRESH
+    TokenEnum.REFRESH
   );
   const user = await userService.getUserById(refreshTokenDoc.user);
   if (!user) {
@@ -68,7 +62,7 @@ export const resetPassword = async (
   const resetPasswordOtpDoc = await otpService.verifyOtp(
     user.id,
     resetPasswordOtp,
-    otpTypes.RESET_PASSWORD
+    OtpEnum.RESET_PASSWORD
   );
 
   await userService.updateUserById(resetPasswordOtpDoc.user, {
@@ -76,11 +70,11 @@ export const resetPassword = async (
   });
   await OTP.deleteMany({
     user: resetPasswordOtpDoc.user,
-    type: otpTypes.RESET_PASSWORD,
+    type: OtpEnum.RESET_PASSWORD,
   });
   await Token.deleteMany({
     user: resetPasswordOtpDoc.user,
-    type: tokenTypes.REFRESH,
+    type: TokenEnum.REFRESH,
   });
 };
 
@@ -88,12 +82,12 @@ export const verifyEmail = async (user: IUser, verifyEmailOtp: number) => {
   const verifyEmailOtpDoc = await otpService.verifyOtp(
     user.id,
     verifyEmailOtp,
-    otpTypes.VERIFY_EMAIL
+    OtpEnum.VERIFY_EMAIL
   );
 
   await userService.updateUserById(user.id, { isEmailVerified: true });
   await OTP.deleteMany({
     user: verifyEmailOtpDoc.user,
-    type: otpTypes.VERIFY_EMAIL,
+    type: OtpEnum.VERIFY_EMAIL,
   });
 };

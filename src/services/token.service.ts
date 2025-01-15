@@ -3,15 +3,10 @@ import jwt from "jsonwebtoken";
 import moment from "moment";
 import httpStatus from "http-status";
 
-// constants
-import { tokenTypes } from "../constants/schemas";
-import { config } from "../constants/config";
-
-// models
 import { Token } from "../models";
-
-// helpers
 import ApiError from "../helpers/ApiError";
+import { config } from "../constants/config";
+import { TokenEnum } from "../types/token.type";
 
 // This function generates a particular type of token
 const generateToken = (
@@ -48,7 +43,7 @@ const saveToken = async (
 };
 
 // This function verifies whether the token is valid or not
-export const verifyToken = async (token: string, type: tokenTypes) => {
+export const verifyToken = async (token: string, type: TokenEnum) => {
   const payload = jwt.verify(token, config.jwt.secret);
   const tokenDoc = await Token.findOne({
     token,
@@ -71,7 +66,7 @@ export const generateAuthTokens = async (user: any) => {
   const accessToken = generateToken(
     user.id,
     accessTokenExpires,
-    tokenTypes.ACCESS
+    TokenEnum.ACCESS
   );
 
   const refreshTokenExpires = moment().add(
@@ -81,14 +76,14 @@ export const generateAuthTokens = async (user: any) => {
   const refreshToken = generateToken(
     user.id,
     refreshTokenExpires,
-    tokenTypes.REFRESH
+    TokenEnum.REFRESH
   );
 
   await saveToken(
     refreshToken,
     user.id,
     refreshTokenExpires,
-    tokenTypes.REFRESH
+    TokenEnum.REFRESH
   );
 
   return {

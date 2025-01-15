@@ -2,10 +2,7 @@ import mongoose from "mongoose";
 import * as bcrypt from "bcryptjs";
 import validator from "validator";
 
-// constants
 import { roles } from "../constants/roles";
-
-// plugins
 import { IPaginateOptions, paginate, toJSON } from "../plugins";
 
 export interface IUser extends mongoose.Document {

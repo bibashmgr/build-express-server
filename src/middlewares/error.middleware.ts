@@ -2,21 +2,16 @@ import express from "express";
 import mongoose from "mongoose";
 import httpStatus from "http-status";
 
-// helpers
-import ApiError from "../helpers/ApiError";
-
-// constants
-import { config } from "../constants/config";
-import { responseStatusTypes } from "../constants/schemas";
-
-// utils
 import { logger } from "../utils/logger";
+import ApiError from "../helpers/ApiError";
+import { config } from "../constants/config";
+import { ResponseStatusEnum } from "../types/response.type";
 
 // This middlware converts Error into ApiError
 export const errorConverter = (
   err: any,
-  req: express.Request,
-  res: express.Response,
+  _req: express.Request,
+  _res: express.Response,
   next: express.NextFunction
 ) => {
   let error = err;
@@ -36,7 +31,7 @@ export const errorConverter = (
 // This middleware formats ApiError into JSON
 export const errorHandler = (
   err: any,
-  req: express.Request,
+  _req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -50,7 +45,7 @@ export const errorHandler = (
   res.locals.errorMessage = err.message;
 
   const response = {
-    status: responseStatusTypes.FAILURE,
+    status: ResponseStatusEnum.FAILURE,
     data: null,
     message,
     ...(config.env === "development" && { stack: err.stack }),

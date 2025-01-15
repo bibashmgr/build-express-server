@@ -1,25 +1,16 @@
-import express from "express";
-import helmet from "helmet";
 import cors from "cors";
-import compression from "compression";
-import httpStatus from "http-status";
+import helmet from "helmet";
+import express from "express";
 import passport from "passport";
+import httpStatus from "http-status";
+import compression from "compression";
 import rateLimit from "express-rate-limit";
 
-// config
+import routes from "./routes";
+import ApiError from "./helpers/ApiError";
 import { config } from "./constants/config";
-
-// utils
 import { morganHandler } from "./utils/morgan";
 import { jwtStrategy } from "./utils/passport";
-
-// routes
-import routes from "./routes";
-
-// helpers
-import ApiError from "./helpers/ApiError";
-
-// middlewares
 import { errorConverter, errorHandler } from "./middlewares";
 
 const app = express();
@@ -64,7 +55,7 @@ if (config.env === "production") {
 app.use("/", routes);
 
 // send back a 404 error for any unknown api request
-app.use((req, res, next) => {
+app.use((_req, _res, next) => {
   next(new ApiError(httpStatus.NOT_FOUND, "Not Found!"));
 });
 

@@ -2,12 +2,9 @@ import express from "express";
 import httpStatus from "http-status";
 import passport from "passport";
 
-// helpers
-import ApiError from "../helpers/ApiError";
-
-// constants
-import { roleRights } from "../constants/roles";
 import { IUser } from "../models";
+import ApiError from "../helpers/ApiError";
+import { roleRights } from "../constants/roles";
 
 const verifyCallback =
   (

@@ -3,18 +3,11 @@ import mongoose from "mongoose";
 import httpStatus from "http-status";
 import * as otpGenerator from "otp-generator";
 
-// helpers
-import ApiError from "../helpers/ApiError";
-
-// services
-import * as userService from "./user.service";
-
-// constants
-import { config } from "../constants/config";
-import { otpTypes } from "../constants/schemas";
-
-// models
 import { IUser, OTP } from "../models";
+import ApiError from "../helpers/ApiError";
+import { OtpEnum } from "../types/otp.type";
+import { config } from "../constants/config";
+import * as userService from "./user.service";
 
 // This function generates OTP code
 const generateOtp = (): number => {
@@ -47,7 +40,7 @@ const saveOtp = async (
 export const verifyOtp = async (
   userId: mongoose.Types.ObjectId,
   code: number,
-  type: otpTypes
+  type: OtpEnum
 ) => {
   const otpDoc = await OTP.findOne({
     user: userId,
@@ -77,7 +70,7 @@ export const generateResetPasswordOtp = async (email: string) => {
     "minutes"
   );
   const resetPasswordOtp = generateOtp();
-  await saveOtp(resetPasswordOtp, user.id, otpTypes.RESET_PASSWORD, expires);
+  await saveOtp(resetPasswordOtp, user.id, OtpEnum.RESET_PASSWORD, expires);
 
   return resetPasswordOtp;
 };
@@ -93,7 +86,7 @@ export const generateVerifyEmailOtp = async (user: IUser) => {
     "minutes"
   );
   const verifyEmailOtp = generateOtp();
-  await saveOtp(verifyEmailOtp, user.id, otpTypes.VERIFY_EMAIL, expires);
+  await saveOtp(verifyEmailOtp, user.id, OtpEnum.VERIFY_EMAIL, expires);
 
   return verifyEmailOtp;
 };

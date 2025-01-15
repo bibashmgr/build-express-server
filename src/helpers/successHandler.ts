@@ -1,10 +1,9 @@
-// cosntants
-import { responseStatusTypes } from "../constants/schemas";
+import { ResponseStatusEnum } from "../types/response.type";
 
 // This function formates the response body
 const successHandler = (data: any, message?: string) => {
   return {
-    status: responseStatusTypes.SUCCESS,
+    status: ResponseStatusEnum.SUCCESS,
     data,
     message: message || "",
   };

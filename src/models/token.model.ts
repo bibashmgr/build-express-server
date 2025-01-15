@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 
-// constants
-import { tokenTypes } from "../constants/schemas";
+import { TokenEnum } from "../types/token.type";
 
 export interface IToken extends mongoose.Document {
   token: string;
   user: mongoose.Types.ObjectId;
-  type: tokenTypes;
+  type: TokenEnum;
   expires: Date;
   blacklisted: boolean;
 }
@@ -25,7 +24,7 @@ const tokenSchema = new mongoose.Schema<IToken>(
     },
     type: {
       type: String,
-      enum: [tokenTypes.REFRESH],
+      enum: [TokenEnum.REFRESH],
       required: true,
     },
     expires: {
