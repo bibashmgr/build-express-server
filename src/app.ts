@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 
-import routes from "./routes";
+import routes from "./routes/v1";
 import ApiError from "./helpers/ApiError";
 import { config } from "./constants/config";
 import { morganHandler } from "./utils/morgan";
@@ -52,7 +52,7 @@ if (config.env === "production") {
 }
 
 // api-routes
-app.use("/", routes);
+app.use("/v1", routes);
 
 // send back a 404 error for any unknown api request
 app.use((_req, _res, next) => {
