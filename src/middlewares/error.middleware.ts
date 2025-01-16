@@ -32,8 +32,7 @@ export const errorConverter = (
 export const errorHandler = (
   err: any,
   _req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   let { statusCode, message } = err;
 

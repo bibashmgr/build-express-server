@@ -30,7 +30,7 @@ export const paginate = (schema: any) => {
     const page = options.page && options.page > 0 ? options.page : 1;
     const skip = (page - 1) * limit;
 
-    for (let key in filter) {
+    for (const key in filter) {
       if (filter[key] === undefined) {
         delete filter[key];
       }
@@ -45,7 +45,7 @@ export const paginate = (schema: any) => {
           path: string;
           populate: string | Populate;
         };
-        let arr = populateOption
+        const arr = populateOption
           .split(".")
           .reverse()
           .reduce(
