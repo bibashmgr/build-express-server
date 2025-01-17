@@ -17,7 +17,8 @@ export interface IUserMethods {
   isPasswordMatch(password: string): Promise<boolean>;
 }
 
-export interface IUserModel extends mongoose.Model<IUser, {}, IUserMethods> {
+export interface IUserModel
+  extends mongoose.Model<IUser, unknown, IUserMethods> {
   isEmailTaken(
     email: string,
     excludeUserId?: mongoose.Types.ObjectId | string
@@ -51,7 +52,7 @@ const userSchema = new mongoose.Schema<IUser>(
       trim: true,
       minlength: 8,
       validate(value: string) {
-        if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+        if (!/\d/.test(value) || !/[a-zA-Z]/.test(value)) {
           throw new Error(
             "Password must contain at least one letter and one number"
           );
@@ -91,15 +92,13 @@ userSchema.static(
 userSchema.method(
   "isPasswordMatch",
   async function isPasswordMatch(password: string) {
-    const user: IUser = this;
-    return bcrypt.compare(password, user.password);
+    return bcrypt.compare(password, this.password);
   }
 );
 
 userSchema.pre("save", async function (next) {
-  const user: IUser = this;
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 8);
   }
   next();
 });

@@ -13,7 +13,7 @@ const verifyCallback =
     reject: (reason: any) => void,
     requiredRights: string[]
   ) =>
-  async (err: any, user: IUser | null, info: any) => {
+  (err: any, user: IUser | null, info: any) => {
     if (err || info || !user) {
       return reject(
         new ApiError(httpStatus.UNAUTHORIZED, "Please Authenticate")
@@ -22,7 +22,7 @@ const verifyCallback =
     req.user = user;
 
     if (requiredRights.length) {
-      const userRights = roleRights.get(user.role) || [];
+      const userRights = roleRights.get(user.role) ?? [];
       const hasRequiredRights = requiredRights.every((requiredRight) =>
         userRights.includes(requiredRight)
       );
@@ -49,5 +49,5 @@ export const authenticate =
       )(req, res, next);
     })
       .then(() => next())
-      .catch((err) => next(err));
+      .catch((err: unknown) => next(err));
   };

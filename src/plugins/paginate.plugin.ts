@@ -5,6 +5,11 @@ export interface IPaginateOptions {
   page?: number;
 }
 
+interface Populate {
+  path: string;
+  populate: string | Populate | undefined;
+}
+
 // [options.sortBy] - Sorting criteria using the format: sortField:(desc|asc). Multiple sorting criteria should be separated by commas (,)
 // [options.populate] - Populate data fields. Hierarchy of fields should be separated by (.). Multiple populating criteria should be separated by commas (,)
 // [options.limit] - Maximum number of results per page (default = 10)
@@ -41,17 +46,13 @@ export const paginate = (schema: any) => {
 
     if (options.populate) {
       options.populate.split(",").forEach((populateOption) => {
-        type Populate = {
-          path: string;
-          populate: string | Populate;
-        };
         const arr = populateOption
           .split(".")
           .reverse()
-          .reduce(
+          .reduce<Populate | undefined>(
             (a, b) => ({ path: b, populate: a }),
-            undefined as unknown as any
-          ) as Populate;
+            undefined
+          );
 
         docsPromise = docsPromise.populate(arr);
       });

@@ -5,8 +5,8 @@ import { passwordValidation } from "./custom.validation";
 export const register = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().custom(passwordValidation),
     name: Joi.string().required(),
+    password: Joi.string().required().custom(passwordValidation),
   }),
 };
 
@@ -36,12 +36,12 @@ export const forgotPassword = {
 };
 
 export const resetPassword = {
-  query: Joi.object().keys({
-    otp: Joi.number().required(),
-  }),
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required().custom(passwordValidation),
+  }),
+  query: Joi.object().keys({
+    otp: Joi.number().required(),
   }),
 };
 

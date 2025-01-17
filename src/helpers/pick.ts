@@ -1,9 +1,5 @@
-interface IObject {
-  [key: string]: any;
-}
-
-export const pick = (object: IObject, keys: string[]) => {
-  return keys.reduce((obj: IObject, key: string) => {
+export const pick = (object: Record<string, any>, keys: string[]) => {
+  return keys.reduce((obj: Record<string, any>, key: string) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
       obj[key] = object[key];
     }

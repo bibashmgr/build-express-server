@@ -5,7 +5,7 @@ const successHandler = (data: any, message?: string) => {
   return {
     status: ResponseStatusEnum.SUCCESS,
     data,
-    message: message || "",
+    message: message ?? "Success",
   };
 };
 

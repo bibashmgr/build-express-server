@@ -9,8 +9,8 @@ import { config } from "../constants/config";
 import { TokenEnum } from "../types/token.type";
 
 const jwtOptions = {
-  secretOrKey: config.jwt.secret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: config.jwt.secret,
 };
 
 const jwtVerify = async (payload: any, done: VerifiedCallback) => {

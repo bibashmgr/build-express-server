@@ -36,7 +36,7 @@ export const getUser = catchAsync(
 );
 
 export const getMyProfile = catchAsync(
-  async (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: express.Response) => {
     res
       .status(httpStatus.OK)
       .send(successHandler(req.user, "Fetch my profile"));

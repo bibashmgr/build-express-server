@@ -17,6 +17,9 @@ mongoose
     server = app.listen(config.port, () => {
       logger.info(`Server running on port ${config.port}`);
     });
+  })
+  .catch((error: unknown) => {
+    logger.error("MongoDB connection error: ", error);
   });
 
 const exitHandler = () => {

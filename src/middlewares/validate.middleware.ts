@@ -5,14 +5,14 @@ import httpStatus from "http-status";
 import { pick } from "../helpers/pick";
 import ApiError from "../helpers/ApiError";
 
-interface IValidateSchema {
-  [key: string]: Joi.Schema;
-}
-
 // This middleware validates request body with given schema
 export const validate =
-  (schema: IValidateSchema) =>
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  (schema: Record<string, Joi.Schema>) =>
+  (
+    req: express.Request,
+    _res: express.Response,
+    next: express.NextFunction
+  ) => {
     const validSchema = pick(schema, ["params", "query", "body"]);
     const object = pick(req, Object.keys(validSchema));
     const { value, error } = Joi.compile(validSchema)

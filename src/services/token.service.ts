@@ -30,7 +30,7 @@ const saveToken = async (
   userId: mongoose.Types.ObjectId,
   expires: moment.Moment,
   type: string,
-  blacklisted: boolean = false
+  blacklisted = false
 ) => {
   const tokenDoc = await Token.create({
     token,
