@@ -1,47 +1,65 @@
-import Joi from "joi";
+import { z } from "zod";
 
-import { objectIdValidation, passwordValidation } from "./custom.validation";
-
-export const createUser = {
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    name: Joi.string().required(),
-    password: Joi.string().required().custom(passwordValidation),
-    role: Joi.string().required().valid("user", "admin"),
+export const createUser = z.object({
+  body: z.object({
+    email: z
+      .string({
+        message: "Email is required",
+      })
+      .email({
+        message: "Invalid email",
+      }),
+    name: z.string({
+      message: "Name is required",
+    }),
+    password: z
+      .string({
+        message: "Password is required",
+      })
+      .min(8, {
+        message: "Password must be at least 8 characters",
+      }),
+    role: z.enum(["user", "admin"], {
+      message: "Invalid role",
+    }),
   }),
-};
+});
 
-export const getUsers = {
-  query: Joi.object().keys({
-    limit: Joi.number().integer(),
-    name: Joi.string(),
-    page: Joi.number().integer(),
-    role: Joi.string(),
-    sortBy: Joi.string(),
+export const getUsers = z.object({
+  query: z.object({
+    limit: z.coerce.number().optional(),
+    name: z.string().optional(),
+    page: z.coerce.number().optional(),
+    role: z.string().optional(),
+    sortBy: z.string().optional(),
   }),
-};
+});
 
-export const getUser = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectIdValidation),
+export const getUser = z.object({
+  params: z.object({
+    userId: z.string({
+      message: "UserId is required",
+    }),
   }),
-};
+});
 
-export const updateUser = {
-  body: Joi.object()
-    .keys({
-      email: Joi.string().email(),
-      name: Joi.string(),
-      password: Joi.string().custom(passwordValidation),
-    })
-    .min(1),
-  params: Joi.object().keys({
-    userId: Joi.required().custom(objectIdValidation),
+export const updateUser = z.object({
+  body: z.object({
+    email: z.string().email().optional(),
+    name: z.string().optional(),
+    password: z.string().optional(),
   }),
-};
+  params: z.object({
+    userId: z.string({
+      message: "UserId is required",
+    }),
+  }),
+});
 
-export const deleteUser = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectIdValidation),
+export const deleteUser = z.object({
+  params: z.object({
+    userId: z.string({
+      message: "UserId is required",
+    }),
   }),
-};
+});
