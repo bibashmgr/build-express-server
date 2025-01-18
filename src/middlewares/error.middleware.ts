@@ -1,11 +1,11 @@
 import express from "express";
-import mongoose from "mongoose";
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 
-import { logger } from "../utils/logger";
-import ApiError from "../helpers/ApiError";
 import { config } from "../constants/config";
+import ApiError from "../helpers/ApiError";
 import { ResponseStatusEnum } from "../types/response.type";
+import { logger } from "../utils/logger";
 
 // This middlware converts Error into ApiError
 export const errorConverter = (
@@ -35,7 +35,7 @@ export const errorHandler = (
   res: express.Response,
   _next: express.NextFunction
 ) => {
-  let { statusCode, message } = err;
+  let { message, statusCode } = err;
 
   if (config.env === "production" && !err.isOperational) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
@@ -45,9 +45,9 @@ export const errorHandler = (
   res.locals.errorMessage = err.message;
 
   const response = {
-    status: ResponseStatusEnum.FAILURE,
     data: null,
     message,
+    status: ResponseStatusEnum.FAILURE,
     ...(config.env === "development" && { stack: err.stack }),
   };
 

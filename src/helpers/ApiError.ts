@@ -1,7 +1,7 @@
 class ApiError extends Error {
-  statusCode: number;
   isOperational?: boolean;
   stack?: string | undefined;
+  statusCode: number;
 
   constructor(
     statusCode: number,

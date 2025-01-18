@@ -2,8 +2,8 @@ import http from "http";
 import mongoose from "mongoose";
 
 import app from "./app";
-import { logger } from "./utils/logger";
 import { config } from "./constants/config";
+import { logger } from "./utils/logger";
 
 let server: http.Server;
 
@@ -15,7 +15,7 @@ mongoose
   .then(() => {
     logger.info("Connected to MongoDB");
     server = app.listen(config.port, () => {
-      logger.info(`Server running on port ${config.port}`);
+      logger.info(`Server running on port ${String(config.port)}`);
     });
   })
   .catch((error: unknown) => {

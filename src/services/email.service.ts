@@ -1,21 +1,19 @@
 import moment from "moment";
 import nodemailer from "nodemailer";
 
-import { logger } from "../utils/logger";
 import { config } from "../constants/config";
+import { logger } from "../utils/logger";
 
 const transport = nodemailer.createTransport(config.email.smtp);
 
-if (config.env !== "test") {
-  transport
-    .verify()
-    .then(() => logger.info("Connected to email server"))
-    .catch(() =>
-      logger.warn(
-        "Unable to connect to email server. Make sure you have configured the SMTP options in .env"
-      )
-    );
-}
+transport
+  .verify()
+  .then(() => logger.info("Connected to email server"))
+  .catch(() =>
+    logger.warn(
+      "Unable to connect to email server. Make sure you have configured the SMTP options in .env"
+    )
+  );
 
 // This function returns html content
 const generateHtmlContent = (
@@ -49,10 +47,10 @@ const generateHtmlContent = (
               ${title}
             </h1>
             <p style="margin:0; margin-top:17px; font-weight:500; letter-spacing:0.56px;">
-              Use the following OTP to complete the procedure to ${title} for your account. OTP is valid for ${expirationMins} minutes. Do not share this code with others.
+              Use the following OTP to complete the procedure to ${title} for your account. OTP is valid for ${String(expirationMins)} minutes. Do not share this code with others.
             </p>
             <p style="margin:0; margin-top:60px; font-size:32px; font-weight:600; letter-spacing:25px; color:#319795;">
-              ${code}
+              ${String(code)}
             </p>
           </div>
         </div>
@@ -67,7 +65,7 @@ const generateHtmlContent = (
       </main>
       <footer style=" width: 100%; max-width: 490px; margin: 20px auto 0; text-align: center; border-top: 1px solid #e6ebf1;">        
         <p style="margin: 0; margin-top: 16px; color: #ffffff;">
-          Copyright © ${new Date().getFullYear()} Your Brand. All rights reserved.
+          Copyright © ${String(new Date().getFullYear())} Your Brand. All rights reserved.
         </p>
       </footer>
     </div>
@@ -77,7 +75,7 @@ const generateHtmlContent = (
 
 // This function sends email to a paticular email account
 const sendEmail = async (to: string, subject: string, html: string) => {
-  const msg = { from: config.email.from, to, subject, html };
+  const msg = { from: config.email.from, html, subject, to };
   await transport.sendMail(msg);
 };
 

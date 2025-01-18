@@ -1,13 +1,13 @@
 export interface IPaginateOptions {
-  sortBy?: string;
-  populate?: string;
   limit?: number;
   page?: number;
+  populate?: string;
+  sortBy?: string;
 }
 
 interface Populate {
   path: string;
-  populate: string | Populate | undefined;
+  populate: Populate | string | undefined;
 }
 
 // [options.sortBy] - Sorting criteria using the format: sortField:(desc|asc). Multiple sorting criteria should be separated by commas (,)
@@ -64,9 +64,9 @@ export const paginate = (schema: any) => {
       const [totalResults, results] = values;
       const totalPages = Math.ceil(totalResults / limit);
       const result = {
-        results,
-        page,
         limit,
+        page,
+        results,
         totalPages,
         totalResults,
       };

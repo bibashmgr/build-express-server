@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
 import * as bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 import validator from "validator";
 
 import { roles } from "../constants/roles";
 import { IPaginateOptions, paginate, toJSON } from "../plugins";
 
 export interface IUser extends mongoose.Document {
-  name: string;
   email: string;
+  isEmailVerified: boolean;
+  name: string;
   password: string;
   role: string;
-  isEmailVerified: boolean;
 }
 
 export interface IUserMethods {

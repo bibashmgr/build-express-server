@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 import { TokenEnum } from "../types/token.type";
 
 export interface IToken extends mongoose.Document {
-  token: string;
-  user: mongoose.Types.ObjectId;
-  type: TokenEnum;
-  expires: Date;
   blacklisted: boolean;
+  expires: Date;
+  token: string;
+  type: TokenEnum;
+  user: mongoose.Types.ObjectId;
 }
 
 const tokenSchema = new mongoose.Schema<IToken>(

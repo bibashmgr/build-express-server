@@ -1,11 +1,11 @@
 import express from "express";
 import morgan from "morgan";
 
-import { logger } from "./logger";
 import { config } from "../constants/config";
+import { logger } from "./logger";
 
-morgan.token("message", (req: express.Request, res: express.Response) => {
-  return res.locals.errorMessage || "";
+morgan.token("message", (_req: express.Request, res: express.Response) => {
+  return res.locals.errorMessage ?? "";
 });
 
 const getIpFormat = () =>

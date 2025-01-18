@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
 
 import ApiError from "../helpers/ApiError";
-import * as otpService from "./otp.service";
-import { OtpEnum } from "../types/otp.type";
-import * as userService from "./user.service";
 import { IUser, OTP, Token } from "../models";
-import * as tokenService from "./token.service";
+import { OtpEnum } from "../types/otp.type";
 import { TokenEnum } from "../types/token.type";
+import * as otpService from "./otp.service";
+import * as tokenService from "./token.service";
+import * as userService from "./user.service";
 
 // This function logins user by email & password
 export const loginUserWithEmailAndPassword = async (
@@ -23,9 +23,9 @@ export const loginUserWithEmailAndPassword = async (
 // This functions logouts user from the system
 export const logout = async (refreshToken: string) => {
   const refreshTokenDoc = await Token.findOne({
+    blacklisted: false,
     token: refreshToken,
     type: TokenEnum.REFRESH,
-    blacklisted: false,
   });
 
   if (!refreshTokenDoc) {
@@ -69,12 +69,12 @@ export const resetPassword = async (
     password: newPassword,
   });
   await OTP.deleteMany({
-    user: resetPasswordOtpDoc.user,
     type: OtpEnum.RESET_PASSWORD,
+    user: resetPasswordOtpDoc.user,
   });
   await Token.deleteMany({
-    user: resetPasswordOtpDoc.user,
     type: TokenEnum.REFRESH,
+    user: resetPasswordOtpDoc.user,
   });
 };
 
@@ -87,7 +87,7 @@ export const verifyEmail = async (user: IUser, verifyEmailOtp: number) => {
 
   await userService.updateUserById(user.id, { isEmailVerified: true });
   await OTP.deleteMany({
-    user: verifyEmailOtpDoc.user,
     type: OtpEnum.VERIFY_EMAIL,
+    user: verifyEmailOtpDoc.user,
   });
 };

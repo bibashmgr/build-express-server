@@ -1,12 +1,12 @@
+import httpStatus from "http-status";
 import moment from "moment";
 import mongoose from "mongoose";
-import httpStatus from "http-status";
 import * as otpGenerator from "otp-generator";
 
-import { IUser, OTP } from "../models";
-import ApiError from "../helpers/ApiError";
-import { OtpEnum } from "../types/otp.type";
 import { config } from "../constants/config";
+import ApiError from "../helpers/ApiError";
+import { IUser, OTP } from "../models";
+import { OtpEnum } from "../types/otp.type";
 import * as userService from "./user.service";
 
 // This function generates OTP code
@@ -14,8 +14,8 @@ const generateOtp = (): number => {
   const otpCode = otpGenerator.generate(6, {
     digits: true,
     lowerCaseAlphabets: false,
-    upperCaseAlphabets: false,
     specialChars: false,
+    upperCaseAlphabets: false,
   });
   return Number(otpCode);
 };
@@ -29,9 +29,9 @@ const saveOtp = async (
 ) => {
   const tokenDoc = await OTP.create({
     code,
-    user: userId,
-    type,
     expires: expires.toDate(),
+    type,
+    user: userId,
   });
   return tokenDoc;
 };
@@ -43,9 +43,9 @@ export const verifyOtp = async (
   type: OtpEnum
 ) => {
   const otpDoc = await OTP.findOne({
-    user: userId,
     code,
     type,
+    user: userId,
   });
   if (!otpDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, "Invalid OTP");

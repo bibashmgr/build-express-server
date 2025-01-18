@@ -1,24 +1,22 @@
-import cors from "cors";
-import helmet from "helmet";
-import express from "express";
-import passport from "passport";
-import httpStatus from "http-status";
 import compression from "compression";
+import cors from "cors";
+import express from "express";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import httpStatus from "http-status";
+import passport from "passport";
 
-import routes from "./routes/v1";
-import ApiError from "./helpers/ApiError";
 import { config } from "./constants/config";
+import ApiError from "./helpers/ApiError";
+import { errorConverter, errorHandler } from "./middlewares";
+import routes from "./routes/v1";
 import { morganHandler } from "./utils/morgan";
 import { jwtStrategy } from "./utils/passport";
-import { errorConverter, errorHandler } from "./middlewares";
 
 const app = express();
 
-if (config.env !== "test") {
-  app.use(morganHandler.successHandler);
-  app.use(morganHandler.errorHandler);
-}
+app.use(morganHandler.successHandler);
+app.use(morganHandler.errorHandler);
 
 app.use(helmet());
 
@@ -44,9 +42,9 @@ if (config.env === "production") {
   app.use(
     "/v1/auth",
     rateLimit({
-      windowMs: 15 * 60 * 1000,
       max: 20,
       skipSuccessfulRequests: true,
+      windowMs: 15 * 60 * 1000,
     })
   );
 }

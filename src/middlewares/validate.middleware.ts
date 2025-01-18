@@ -12,7 +12,7 @@ export const validate =
     _res: express.Response,
     next: express.NextFunction
   ) => {
-    const { success, error, data } = schema.safeParse(req);
+    const { data, error, success } = schema.safeParse(req);
 
     if (!success) {
       const errorMessage = error.issues

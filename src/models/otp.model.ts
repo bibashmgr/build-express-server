@@ -4,9 +4,9 @@ import { OtpEnum } from "../types/otp.type";
 
 export interface IOtp extends mongoose.Document {
   code: number;
-  user: mongoose.Types.ObjectId;
-  type: OtpEnum;
   expires: Date;
+  type: OtpEnum;
+  user: mongoose.Types.ObjectId;
 }
 
 const otpSchema = new mongoose.Schema<IOtp>({

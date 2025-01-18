@@ -1,11 +1,11 @@
 import express from "express";
 import httpStatus from "http-status";
 
-import { pick } from "../helpers/pick";
-import { userService } from "../services";
 import ApiError from "../helpers/ApiError";
 import catchAsync from "../helpers/catchAsync";
+import { pick } from "../helpers/pick";
 import successHandler from "../helpers/successHandler";
+import { userService } from "../services";
 
 export const createUser = catchAsync(
   async (req: express.Request, res: express.Response) => {

@@ -5,53 +5,53 @@ import { z } from "zod";
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 export const envVarsSchema = z.object({
-  NODE_ENV: z.enum(["production", "development", "test"]),
-  PORT: z.coerce.number(),
-  MONGODB_URL: z.string(),
-  JWT_SECRET: z.string(),
+  EMAIL_FROM: z.string(),
   JWT_ACCESS_EXPIRATION_MINUTES: z.coerce.number(),
   JWT_REFRESH_EXPIRATION_DAYS: z.coerce.number(),
+  JWT_SECRET: z.string(),
+  MONGODB_URL: z.string(),
+  NODE_ENV: z.enum(["production", "development"]),
   OTP_RESET_PASSWORD_EXPIRATION_MINUTES: z.coerce.number(),
   OTP_VERIFY_EMAIL_EXPIRATION_MINUTES: z.coerce.number(),
+  PORT: z.coerce.number(),
   SMTP_HOST: z.string(),
+  SMTP_PASSWORD: z.string(),
   SMTP_PORT: z.coerce.number(),
   SMTP_USERNAME: z.string(),
-  SMTP_PASSWORD: z.string(),
-  EMAIL_FROM: z.string(),
 });
 
-const { success, error, data: envVars } = envVarsSchema.safeParse(process.env);
+const { data: envVars, error, success } = envVarsSchema.safeParse(process.env);
 
 if (!success) {
-  throw new Error(`Config validation error: ${error}`);
+  throw new Error(`Config validation error: ${String(error)}`);
 }
 
 export const config = {
-  env: envVars.NODE_ENV,
-  port: envVars.PORT,
-  mongoose: {
-    url: envVars.MONGODB_URL,
-    options: {},
+  email: {
+    from: envVars.EMAIL_FROM,
+    smtp: {
+      auth: {
+        pass: envVars.SMTP_PASSWORD,
+        user: envVars.SMTP_USERNAME,
+      },
+      host: envVars.SMTP_HOST,
+      port: envVars.SMTP_PORT,
+    },
   },
+  env: envVars.NODE_ENV,
   jwt: {
-    secret: envVars.JWT_SECRET,
     accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
     refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
+    secret: envVars.JWT_SECRET,
+  },
+  mongoose: {
+    options: {},
+    url: envVars.MONGODB_URL,
   },
   otp: {
     resetPasswordExpirationMinutes:
       envVars.OTP_RESET_PASSWORD_EXPIRATION_MINUTES,
     verifyEmailExpirationMinutes: envVars.OTP_VERIFY_EMAIL_EXPIRATION_MINUTES,
   },
-  email: {
-    smtp: {
-      host: envVars.SMTP_HOST,
-      port: envVars.SMTP_PORT,
-      auth: {
-        user: envVars.SMTP_USERNAME,
-        pass: envVars.SMTP_PASSWORD,
-      },
-    },
-    from: envVars.EMAIL_FROM,
-  },
+  port: envVars.PORT,
 };

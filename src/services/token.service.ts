@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import moment from "moment";
-import httpStatus from "http-status";
+import mongoose from "mongoose";
 
-import { Token } from "../models";
-import ApiError from "../helpers/ApiError";
 import { config } from "../constants/config";
+import ApiError from "../helpers/ApiError";
+import { Token } from "../models";
 import { TokenEnum } from "../types/token.type";
 
 // This function generates a particular type of token
@@ -16,9 +16,9 @@ const generateToken = (
   secret: string = config.jwt.secret
 ) => {
   const payload = {
-    sub: userId,
-    iat: moment().unix(),
     exp: expires.unix(),
+    iat: moment().unix(),
+    sub: userId,
     type,
   };
   return jwt.sign(payload, secret);
@@ -33,11 +33,11 @@ const saveToken = async (
   blacklisted = false
 ) => {
   const tokenDoc = await Token.create({
-    token,
-    user: userId,
-    expires: expires.toDate(),
-    type,
     blacklisted,
+    expires: expires.toDate(),
+    token,
+    type,
+    user: userId,
   });
   return tokenDoc;
 };
@@ -46,10 +46,10 @@ const saveToken = async (
 export const verifyToken = async (token: string, type: TokenEnum) => {
   const payload = jwt.verify(token, config.jwt.secret);
   const tokenDoc = await Token.findOne({
+    blacklisted: false,
     token,
     type,
     user: payload.sub,
-    blacklisted: false,
   });
   if (!tokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, "Token Not Found");
@@ -88,12 +88,12 @@ export const generateAuthTokens = async (user: any) => {
 
   return {
     access: {
-      token: accessToken,
       expires: accessTokenExpires.toDate(),
+      token: accessToken,
     },
     refresh: {
-      token: refreshToken,
       expires: refreshTokenExpires.toDate(),
+      token: refreshToken,
     },
   };
 };

@@ -1,17 +1,16 @@
 import express from "express";
-
 import httpStatus from "http-status";
 
-import {
-  userService,
-  tokenService,
-  authService,
-  otpService,
-  emailService,
-} from "../services";
-import { IUser } from "../models";
 import catchAsync from "../helpers/catchAsync";
 import successHandler from "../helpers/successHandler";
+import { IUser } from "../models";
+import {
+  authService,
+  emailService,
+  otpService,
+  tokenService,
+  userService,
+} from "../services";
 
 export const register = catchAsync(
   async (req: express.Request, res: express.Response) => {
@@ -19,7 +18,7 @@ export const register = catchAsync(
     const tokens = await tokenService.generateAuthTokens(user);
     res
       .status(httpStatus.CREATED)
-      .send(successHandler({ user, tokens }, "User Register Successfully"));
+      .send(successHandler({ tokens, user }, "User Register Successfully"));
   }
 );
 
@@ -33,7 +32,7 @@ export const login = catchAsync(
     const tokens = await tokenService.generateAuthTokens(user);
     res
       .status(httpStatus.OK)
-      .send(successHandler({ user, tokens }, "Login Successful"));
+      .send(successHandler({ tokens, user }, "Login Successful"));
   }
 );
 

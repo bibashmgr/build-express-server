@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 
-import { User } from "../models";
 import ApiError from "../helpers/ApiError";
+import { User } from "../models";
 
 // This function creates and returns new user
 export const createUser = async (userBody: Record<string, any>) => {

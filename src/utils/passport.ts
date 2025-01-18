@@ -1,11 +1,11 @@
 import {
-  Strategy as JwtStrategy,
   ExtractJwt,
+  Strategy as JwtStrategy,
   VerifiedCallback,
 } from "passport-jwt";
 
-import { User } from "../models";
 import { config } from "../constants/config";
+import { User } from "../models";
 import { TokenEnum } from "../types/token.type";
 
 const jwtOptions = {
