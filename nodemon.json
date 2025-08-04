@@ -1,6 +1,6 @@
 {
-    "delay": "0",
-    "execMap": {
-        "ts": "node -r ts-node/register"
-    }
+  "watch": ["src"],
+  "ext": "ts",
+  "exec": "ts-node src/index.ts",
+  "ignore": ["node_modules"]
 }
