@@ -1,58 +1,42 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
 
-import ApiError from "../helpers/ApiError";
-import { User } from "../models";
+import { userModel } from "../models";
+import { UpdateUserPayload } from "../types";
+import { ApiError } from "../helpers/apiError";
+import { authValidation } from "../validations";
 
 // This function creates and returns new user
-export const createUser = async (userBody: Record<string, any>) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email Already Taken");
+async function createUser(payload: authValidation.RegisterUserRequest["body"]) {
+  if (await userModel.isEmailTaken(payload.email)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
   }
-  return User.create(userBody);
-};
+  return await userModel.create(payload);
+}
 
 // This function finds and returns userInfo using email
-export const getUserByEmail = async (email: string) => {
-  return User.findOne({ email });
-};
+async function getUserByEmail(email: string) {
+  return await userModel.findOne({ email });
+}
 
 // This function finds and returns userInfo using userId
-export const getUserById = async (id: mongoose.Types.ObjectId | string) => {
-  return User.findById(id);
-};
+async function getUserById(id: string) {
+  return await userModel.findById(id);
+}
 
 // This function returns all users
-export const queryUsers = async (filter: any, options: any) => {
-  const users = await User.paginate(filter, options);
+async function queryUsers(
+  filter: Record<string, any> = {},
+  options: Record<string, any> = {}
+) {
+  const users = await userModel.paginate(filter, options);
   return users;
-};
+}
 
 // This function finds existing user by userID and updates it.
-export const updateUserById = async (
-  userId: mongoose.Types.ObjectId | string,
-  updateBody: any
-) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-  }
-  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email Already Taken");
-  }
-  Object.assign(user, updateBody);
-  await user.save();
-  return user;
-};
+async function updateUserById(id: string, payload: UpdateUserPayload) {
+  return await userModel.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+}
 
-// This function finds existing user by userID & deletes it
-export const deleteUserById = async (
-  userId: mongoose.Types.ObjectId | string
-) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User Not Found");
-  }
-  await user.deleteOne();
-  return user;
-};
+export { createUser, getUserByEmail, getUserById, queryUsers, updateUserById };

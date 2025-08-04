@@ -2,8 +2,8 @@ import http from "http";
 import mongoose from "mongoose";
 
 import app from "./app";
-import { config } from "./constants/config";
 import { logger } from "./utils/logger";
+import { config } from "./constants/config";
 
 let server: http.Server;
 

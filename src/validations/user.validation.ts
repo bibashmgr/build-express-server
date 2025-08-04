@@ -1,65 +1,44 @@
 import { z } from "zod";
+import mongoose from "mongoose";
 
-export const createUser = z.object({
-  body: z.object({
-    email: z
-      .string({
-        message: "Email is required",
-      })
-      .email({
-        message: "Invalid email",
-      }),
-    name: z.string({
-      message: "Name is required",
-    }),
-    password: z
-      .string({
-        message: "Password is required",
-      })
-      .min(8, {
-        message: "Password must be at least 8 characters",
-      }),
-    role: z.enum(["user", "admin"], {
-      message: "Invalid role",
-    }),
-  }),
-});
+import { UserRoleEnum } from "../types";
 
-export const getUsers = z.object({
+const getUsers = z.object({
   query: z.object({
-    limit: z.coerce.number().optional(),
-    name: z.string().optional(),
-    page: z.coerce.number().optional(),
-    role: z.string().optional(),
+    limit: z.coerce
+      .number({
+        message: "Limit must be number",
+      })
+      .optional(),
+    page: z.coerce
+      .number({
+        message: "Page must be number",
+      })
+      .optional(),
+    role: z
+      .enum(UserRoleEnum, {
+        message: "Role is invalid",
+      })
+      .optional(),
     sortBy: z.string().optional(),
   }),
 });
 
-export const getUser = z.object({
+type GetUsersRequest = z.infer<typeof getUsers>;
+
+const getUser = z.object({
   params: z.object({
-    userId: z.string({
-      message: "UserId is required",
-    }),
+    userId: z.string().refine(
+      (val) => {
+        return mongoose.isValidObjectId(val);
+      },
+      {
+        message: "UserId is invalid",
+      }
+    ),
   }),
 });
 
-export const updateUser = z.object({
-  body: z.object({
-    email: z.string().email().optional(),
-    name: z.string().optional(),
-    password: z.string().optional(),
-  }),
-  params: z.object({
-    userId: z.string({
-      message: "UserId is required",
-    }),
-  }),
-});
+type GetUserRequest = z.infer<typeof getUser>;
 
-export const deleteUser = z.object({
-  params: z.object({
-    userId: z.string({
-      message: "UserId is required",
-    }),
-  }),
-});
+export { getUsers, type GetUsersRequest, getUser, type GetUserRequest };

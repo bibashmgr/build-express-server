@@ -1,8 +1,8 @@
-import express from "express";
 import morgan from "morgan";
+import express from "express";
 
+import { logger } from "../utils/logger";
 import { config } from "../constants/config";
-import { logger } from "./logger";
 
 morgan.token("message", (_req: express.Request, res: express.Response) => {
   return res.locals.errorMessage ?? "";
@@ -19,11 +19,8 @@ const errorHandler = morgan(errorResponseFormat, {
 });
 
 const successHandler = morgan(successResponseFormat, {
-  skip: (req, res) => res.statusCode >= 400,
+  skip: (_req, res) => res.statusCode >= 400,
   stream: { write: (message) => logger.info(message.trim()) },
 });
 
-export const morganHandler = {
-  errorHandler,
-  successHandler,
-};
+export { errorHandler, successHandler };

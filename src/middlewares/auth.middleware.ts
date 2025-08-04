@@ -1,10 +1,10 @@
 import express from "express";
-import httpStatus from "http-status";
 import passport from "passport";
+import httpStatus from "http-status";
 
+import { HydratedUser } from "../models";
+import { ApiError } from "../helpers/apiError";
 import { roleRights } from "../constants/roles";
-import ApiError from "../helpers/ApiError";
-import { IUser } from "../models";
 
 const verifyCallback =
   (
@@ -13,12 +13,15 @@ const verifyCallback =
     reject: (reason: any) => void,
     requiredRights: string[]
   ) =>
-  (err: any, user: IUser | null, info: any) => {
+  (err: any, user: HydratedUser | null, info: any) => {
     if (err || info || !user) {
-      return reject(
-        new ApiError(httpStatus.UNAUTHORIZED, "Please Authenticate")
-      );
+      const isTokenExpired = info?.message === "jwt expired";
+      const message = isTokenExpired ? "Token expired" : "Please authenticate";
+      const statusCode = httpStatus.UNAUTHORIZED;
+
+      return reject(new ApiError(statusCode, message));
     }
+
     req.user = user;
 
     if (requiredRights.length) {
@@ -26,8 +29,9 @@ const verifyCallback =
       const hasRequiredRights = requiredRights.every((requiredRight) =>
         userRights.includes(requiredRight)
       );
-      if (!hasRequiredRights && req.params.userId !== user.id) {
-        return reject(new ApiError(httpStatus.FORBIDDEN, "Access Denied"));
+
+      if (!hasRequiredRights) {
+        return reject(new ApiError(httpStatus.FORBIDDEN, "Access denied"));
       }
     }
 

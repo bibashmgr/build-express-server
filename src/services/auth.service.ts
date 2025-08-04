@@ -1,93 +1,166 @@
 import httpStatus from "http-status";
 
-import ApiError from "../helpers/ApiError";
-import { IUser, OTP, Token } from "../models";
-import { OtpEnum } from "../types/otp.type";
-import { TokenEnum } from "../types/token.type";
 import * as otpService from "./otp.service";
-import * as tokenService from "./token.service";
 import * as userService from "./user.service";
+import { OtpEnum, TokenEnum } from "../types";
+import { ApiError } from "../helpers/apiError";
+import { authValidation } from "../validations";
+import * as tokenService from "./token.service";
+import * as emailService from "./email.service";
+
+// This function register a new user and send verify account verification email to the user's email
+async function registerUser(
+  payload: authValidation.RegisterUserRequest["body"]
+) {
+  const user = await userService.createUser(payload);
+  const optDoc = await otpService.generateVerifyAccountOtp(user.id);
+  await emailService.sendAccountVerificationEmail(user.email, optDoc.code);
+  return null;
+}
+
+// This function generates a verify account OTP for the user identified by email
+async function sendAccountVerificationCode(
+  payload: authValidation.SendAccountVerificationCodeRequest["body"]
+) {
+  const user = await userService.getUserByEmail(payload.email);
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid email");
+  }
+
+  if (user.isEmailVerified) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Account already verified");
+  }
+
+  const optDoc = await otpService.generateVerifyAccountOtp(user.id);
+  await emailService.sendAccountVerificationEmail(user.email, optDoc.code);
+  return null;
+}
+
+// This fucntion verifies the user’s account by validating the OTP code
+async function verifyAccount(
+  payload: authValidation.VerifyAccountRequest["body"]
+) {
+  const user = await userService.getUserByEmail(payload.email);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No user found");
+  }
+
+  if (user.isEmailVerified) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Account already verified");
+  }
+
+  await otpService.verifyOtp(user.id, payload.code, OtpEnum.VERIFY_ACCOUNT);
+  await Promise.all([
+    userService.updateUserById(user.id, { isEmailVerified: true }),
+    otpService.deleteOtpsByUserId(user.id, OtpEnum.VERIFY_ACCOUNT),
+  ]);
+  return null;
+}
 
 // This function logins user by email & password
-export const loginUserWithEmailAndPassword = async (
-  email: string,
-  password: string
-) => {
-  const user = await userService.getUserByEmail(email);
-  if (!user || !(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect Credentials");
-  }
-  return user;
-};
+async function loginUser(payload: authValidation.LoginUserRequest["body"]) {
+  const user = await userService.getUserByEmail(payload.email);
 
-// This functions logouts user from the system
-export const logout = async (refreshToken: string) => {
-  const refreshTokenDoc = await Token.findOne({
-    blacklisted: false,
-    token: refreshToken,
-    type: TokenEnum.REFRESH,
-  });
-
-  if (!refreshTokenDoc) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Token Not Found");
+  if (!user || !(await user.isPasswordMatch(payload.password))) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials");
   }
 
-  await refreshTokenDoc.deleteOne();
-};
+  if (!user.isEmailVerified) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Account not verified");
+  }
+
+  const tokens = await tokenService.generateAuthTokens(user.id);
+  return {
+    account: user,
+    tokens,
+  };
+}
+
+// This function generates a reset password OTP for the user identified by email
+async function forgotPassword(
+  payload: authValidation.ForgotPasswordRequest["body"]
+) {
+  const user = await userService.getUserByEmail(payload.email);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No user found");
+  }
+
+  const otpDoc = await otpService.generateResetPasswordOtp(user.id);
+  await emailService.sendResetPasswordEmail(user.email, otpDoc.code);
+  return null;
+}
+
+// This function verifies the reset password OTP for the user’s email & updates the user’s password
+async function resetPassword(
+  payload: authValidation.ResetPasswordRequest["body"]
+) {
+  const user = await userService.getUserByEmail(payload.email);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No user found");
+  }
+
+  await otpService.verifyOtp(user.id, payload.code, OtpEnum.RESET_PASSWORD);
+  await Promise.all([
+    userService.updateUserById(user.id, {
+      password: payload.password,
+    }),
+    otpService.deleteOtpsByUserId(user.id, OtpEnum.RESET_PASSWORD),
+    tokenService.deleteTokensByUserId(user.id, TokenEnum.REFRESH),
+  ]);
+  return null;
+}
 
 // This function removes and generates a new refresh token
-export const refreshAuth = async (refreshToken: string) => {
+async function refreshToken(
+  payload: authValidation.RefreshTokenRequest["body"]
+) {
   const refreshTokenDoc = await tokenService.verifyToken(
-    refreshToken,
+    payload.refreshToken,
     TokenEnum.REFRESH
   );
-  const user = await userService.getUserById(refreshTokenDoc.user);
+  const user = await userService.getUserById(refreshTokenDoc.user.toString());
+
   if (!user) {
-    throw new ApiError(httpStatus.FORBIDDEN, "Invalid Token");
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "No user found for the provided token"
+    );
   }
+
   await refreshTokenDoc.deleteOne();
-  return tokenService.generateAuthTokens(user);
-};
+  return await tokenService.generateAuthTokens(user.id);
+}
 
-export const resetPassword = async (
-  email: string,
-  resetPasswordOtp: number,
-  newPassword: string
-) => {
-  const user = await userService.getUserByEmail(email);
+// This functions logouts user from the system
+async function logoutUser(payload: authValidation.LogoutUserRequest["body"]) {
+  const refreshTokenDoc = await tokenService.verifyToken(
+    payload.refreshToken,
+    TokenEnum.REFRESH
+  );
+
+  const user = await userService.getUserById(refreshTokenDoc.user.toString());
+
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User Not Found");
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "No user found for the provided token"
+    );
   }
 
-  const resetPasswordOtpDoc = await otpService.verifyOtp(
-    user.id,
-    resetPasswordOtp,
-    OtpEnum.RESET_PASSWORD
-  );
+  return await refreshTokenDoc.deleteOne();
+}
 
-  await userService.updateUserById(resetPasswordOtpDoc.user, {
-    password: newPassword,
-  });
-  await OTP.deleteMany({
-    type: OtpEnum.RESET_PASSWORD,
-    user: resetPasswordOtpDoc.user,
-  });
-  await Token.deleteMany({
-    type: TokenEnum.REFRESH,
-    user: resetPasswordOtpDoc.user,
-  });
-};
-
-export const verifyEmail = async (user: IUser, verifyEmailOtp: number) => {
-  const verifyEmailOtpDoc = await otpService.verifyOtp(
-    user.id,
-    verifyEmailOtp,
-    OtpEnum.VERIFY_EMAIL
-  );
-
-  await userService.updateUserById(user.id, { isEmailVerified: true });
-  await OTP.deleteMany({
-    type: OtpEnum.VERIFY_EMAIL,
-    user: verifyEmailOtpDoc.user,
-  });
+export {
+  registerUser,
+  sendAccountVerificationCode,
+  verifyAccount,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  refreshToken,
+  logoutUser,
 };

@@ -1,9 +1,4 @@
-export interface IPaginateOptions {
-  limit?: number;
-  page?: number;
-  populate?: string;
-  sortBy?: string;
-}
+import { PaginateOptions } from "../types";
 
 interface Populate {
   path: string;
@@ -17,7 +12,7 @@ interface Populate {
 export const paginate = (schema: any) => {
   schema.statics.paginate = async function (
     filter: any,
-    options: IPaginateOptions
+    options: PaginateOptions
   ) {
     let sort = "";
     if (options.sortBy) {

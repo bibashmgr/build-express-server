@@ -1,12 +1,12 @@
 import express from "express";
+import { ZodObject } from "zod";
 import httpStatus from "http-status";
-import { ZodSchema } from "zod";
 
-import ApiError from "../helpers/ApiError";
+import { ApiError } from "../helpers/apiError";
 
-// This middleware validates request body with given schema
+// This middleware validates request data with given zod schema
 export const validate =
-  (schema: ZodSchema) =>
+  (schema: ZodObject) =>
   (
     req: express.Request,
     _res: express.Response,

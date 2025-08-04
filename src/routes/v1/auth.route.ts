@@ -1,25 +1,33 @@
 import express from "express";
 
+import { validate } from "../../middlewares";
 import { authController } from "../../controllers";
-import { authenticate, validate } from "../../middlewares";
 import { authValidation } from "../../validations";
 
 const router = express.Router();
 
 router.post(
-  "/register",
-  validate(authValidation.register),
-  authController.register
+  "/signup",
+  validate(authValidation.registerUser),
+  authController.registerUser
 );
 
-router.post("/login", validate(authValidation.login), authController.login);
-
-router.post("/logout", validate(authValidation.logout), authController.logout);
+router.post(
+  "/send-verification-code",
+  validate(authValidation.sendAccountVerificationCode),
+  authController.sendAccountVerificationCode
+);
 
 router.post(
-  "/refresh-tokens",
-  validate(authValidation.refreshTokens),
-  authController.refreshTokens
+  "/verify-account",
+  validate(authValidation.verifyAccount),
+  authController.verifyAccount
+);
+
+router.post(
+  "/login",
+  validate(authValidation.loginUser),
+  authController.loginUser
 );
 
 router.post(
@@ -35,16 +43,15 @@ router.post(
 );
 
 router.post(
-  "/send-verification-email",
-  authenticate(),
-  authController.sendVerificationEmail
+  "/refresh-token",
+  validate(authValidation.refreshToken),
+  authController.refreshToken
 );
 
 router.post(
-  "/verify-email",
-  authenticate(),
-  validate(authValidation.verifyEmail),
-  authController.verifyEmail
+  "/logout",
+  validate(authValidation.logoutUser),
+  authController.logoutUser
 );
 
 export default router;

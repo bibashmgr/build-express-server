@@ -1,88 +1,80 @@
 import express from "express";
 import httpStatus from "http-status";
 
-import catchAsync from "../helpers/catchAsync";
-import successHandler from "../helpers/successHandler";
-import { IUser } from "../models";
-import {
-  authService,
-  emailService,
-  otpService,
-  tokenService,
-  userService,
-} from "../services";
+import { authService } from "../services";
+import { catchAsync } from "../helpers/catchAsync";
 
-export const register = catchAsync(
+const registerUser = catchAsync(
   async (req: express.Request, res: express.Response) => {
-    const user = await userService.createUser(req.body);
-    const tokens = await tokenService.generateAuthTokens(user);
-    res
-      .status(httpStatus.CREATED)
-      .send(successHandler({ tokens, user }, "User Register Successfully"));
+    await authService.registerUser(req.body);
+    res.status(httpStatus.CREATED).send({
+      message: "User registered successfully",
+    });
   }
 );
 
-export const login = catchAsync(
+const sendAccountVerificationCode = catchAsync(
   async (req: express.Request, res: express.Response) => {
-    const { email, password } = req.body;
-    const user = await authService.loginUserWithEmailAndPassword(
-      email,
-      password
-    );
-    const tokens = await tokenService.generateAuthTokens(user);
-    res
-      .status(httpStatus.OK)
-      .send(successHandler({ tokens, user }, "Login Successful"));
+    await authService.sendAccountVerificationCode(req.body);
+    res.status(httpStatus.OK).send({
+      message: "Verification code sent successfully",
+    });
   }
 );
 
-export const logout = catchAsync(
+const verifyAccount = catchAsync(
   async (req: express.Request, res: express.Response) => {
-    await authService.logout(req.body.refreshToken);
-    res.status(httpStatus.OK).send(successHandler(null, "Logout Successful"));
+    await authService.verifyAccount(req.body);
+    res.status(httpStatus.OK).send({
+      message: "Account verified successfully",
+    });
   }
 );
 
-export const refreshTokens = catchAsync(
+const loginUser = catchAsync(
   async (req: express.Request, res: express.Response) => {
-    const tokens = await authService.refreshAuth(req.body.refreshToken);
-    res
-      .status(httpStatus.OK)
-      .send(successHandler({ ...tokens }, "Refresh Token Successful"));
+    const result = await authService.loginUser(req.body);
+    res.status(httpStatus.OK).send(result);
   }
 );
 
-export const forgotPassword = catchAsync(async (req, res) => {
-  const resetPasswordOtp = await otpService.generateResetPasswordOtp(
-    req.body.email
-  );
-  await emailService.sendResetPasswordEmail(req.body.email, resetPasswordOtp);
-  res.status(httpStatus.OK).send(successHandler(null, "Send OTP Code"));
+const forgotPassword = catchAsync(async (req, res) => {
+  await authService.forgotPassword(req.body);
+  res.status(httpStatus.OK).send({
+    message: "OPT code sent successfully",
+  });
 });
 
-export const resetPassword = catchAsync(async (req, res) => {
-  await authService.resetPassword(
-    req.body.email,
-    Number(req.query.otp),
-    req.body.password
-  );
-  res
-    .status(httpStatus.OK)
-    .send(successHandler(null, "Reset Password Successfully"));
+const resetPassword = catchAsync(async (req, res) => {
+  await authService.resetPassword(req.body);
+  res.status(httpStatus.OK).send({
+    message: "Reset password successfully",
+  });
 });
 
-export const sendVerificationEmail = catchAsync(async (req, res) => {
-  const verifyEmailOtp = await otpService.generateVerifyEmailOtp(
-    req.user as IUser
-  );
-  await emailService.sendVerificationEmail(
-    (req.user as IUser).email,
-    verifyEmailOtp
-  );
-  res.status(httpStatus.OK).send(successHandler(null, "Send OTP Code"));
-});
+const refreshToken = catchAsync(
+  async (req: express.Request, res: express.Response) => {
+    const tokens = await authService.refreshToken(req.body);
+    res.status(httpStatus.OK).send(tokens);
+  }
+);
 
-export const verifyEmail = catchAsync(async (req, res) => {
-  await authService.verifyEmail(req.user as IUser, Number(req.query.otp));
-  res.status(httpStatus.OK).send(successHandler(null, "Email Verified"));
-});
+const logoutUser = catchAsync(
+  async (req: express.Request, res: express.Response) => {
+    await authService.logoutUser(req.body);
+    res.status(httpStatus.OK).send({
+      message: "User logged out successfully",
+    });
+  }
+);
+
+export {
+  registerUser,
+  sendAccountVerificationCode,
+  verifyAccount,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  refreshToken,
+  logoutUser,
+};

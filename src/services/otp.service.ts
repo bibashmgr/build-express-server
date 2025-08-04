@@ -1,92 +1,102 @@
 import httpStatus from "http-status";
-import moment from "moment";
-import mongoose from "mongoose";
-import * as otpGenerator from "otp-generator";
+import otpGenerator from "otp-generator";
+import { addMinutes, isBefore } from "date-fns";
 
+import { OtpEnum } from "../types";
+import { otpModel } from "../models";
 import { config } from "../constants/config";
-import ApiError from "../helpers/ApiError";
-import { IUser, OTP } from "../models";
-import { OtpEnum } from "../types/otp.type";
-import * as userService from "./user.service";
+import { ApiError } from "../helpers/apiError";
 
-// This function generates OTP code
-const generateOtp = (): number => {
+// This function generates a particular type of otp
+function generateOtp(): string {
   const otpCode = otpGenerator.generate(6, {
     digits: true,
     lowerCaseAlphabets: false,
     specialChars: false,
     upperCaseAlphabets: false,
   });
-  return Number(otpCode);
-};
+  return otpCode;
+}
 
-// This function saves the generated OTP code
-const saveOtp = async (
-  code: number,
-  userId: mongoose.Types.ObjectId,
+// This function saves the generated otp in database
+async function saveOtp(
+  code: string,
+  userId: string,
   type: string,
-  expires: moment.Moment
-) => {
-  const tokenDoc = await OTP.create({
+  expires: Date
+) {
+  const otpDoc = await otpModel.create({
     code,
-    expires: expires.toDate(),
+    expires,
     type,
     user: userId,
   });
-  return tokenDoc;
-};
+  return otpDoc;
+}
+
+// This function generate otp for verifying account
+async function generateVerifyAccountOtp(userId: string) {
+  const expires = addMinutes(
+    new Date(),
+    config.otp.verifyAccountExpirationMinutes
+  );
+  const verifyEmailOtp = generateOtp();
+
+  return await saveOtp(verifyEmailOtp, userId, OtpEnum.VERIFY_ACCOUNT, expires);
+}
+
+// This function generate otp for resetting password
+async function generateResetPasswordOtp(userId: string) {
+  const expires = addMinutes(
+    new Date(),
+    config.otp.resetPasswordExpirationMinutes
+  );
+  const resetPasswordOtp = generateOtp();
+
+  return await saveOtp(
+    resetPasswordOtp,
+    userId,
+    OtpEnum.RESET_PASSWORD,
+    expires
+  );
+}
 
 // This function verifies whether the otp is valid or not
-export const verifyOtp = async (
-  userId: mongoose.Types.ObjectId,
-  code: number,
-  type: OtpEnum
-) => {
-  const otpDoc = await OTP.findOne({
-    code,
-    type,
-    user: userId,
-  });
+async function verifyOtp(userId: string, code: string, type: OtpEnum) {
+  const [otpDoc] = await otpModel
+    .find({
+      user: userId,
+      type,
+    })
+    .sort({ createdAt: -1 })
+    .limit(1);
+
   if (!otpDoc) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Invalid OTP");
+    throw new ApiError(httpStatus.NOT_FOUND, "OTP not found");
   }
 
-  if (!moment.utc().isSameOrBefore(otpDoc.expires)) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "OTP Already Expired");
+  if (otpDoc.code !== code) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid OTP");
+  }
+
+  if (!isBefore(new Date(), otpDoc.expires)) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "OTP already expired");
   }
 
   return otpDoc;
-};
+}
 
-// This function generates otp code to reset password
-export const generateResetPasswordOtp = async (email: string) => {
-  const user: IUser | null = await userService.getUserByEmail(email);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User Not Found");
-  }
+// This function delete all the otps associated with the given userId
+async function deleteOtpsByUserId(userId: string, type: OtpEnum) {
+  return await otpModel.deleteMany({
+    type,
+    user: userId,
+  });
+}
 
-  const expires = moment().add(
-    config.otp.resetPasswordExpirationMinutes,
-    "minutes"
-  );
-  const resetPasswordOtp = generateOtp();
-  await saveOtp(resetPasswordOtp, user.id, OtpEnum.RESET_PASSWORD, expires);
-
-  return resetPasswordOtp;
-};
-
-// This function generates otp code to verify email
-export const generateVerifyEmailOtp = async (user: IUser) => {
-  if (user.isEmailVerified) {
-    throw new ApiError(httpStatus.FORBIDDEN, "Email Already Verified");
-  }
-
-  const expires = moment().add(
-    config.otp.verifyEmailExpirationMinutes,
-    "minutes"
-  );
-  const verifyEmailOtp = generateOtp();
-  await saveOtp(verifyEmailOtp, user.id, OtpEnum.VERIFY_EMAIL, expires);
-
-  return verifyEmailOtp;
+export {
+  generateVerifyAccountOtp,
+  generateResetPasswordOtp,
+  verifyOtp,
+  deleteOtpsByUserId,
 };

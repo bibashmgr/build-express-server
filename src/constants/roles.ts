@@ -1,8 +1,11 @@
-const allRoles = {
-  admin: ["getUsers", "manageUsers"],
-  user: [],
+import { UserRoleEnum } from "../types";
+
+const allRoles: Record<UserRoleEnum, string[]> = {
+  [UserRoleEnum.ADMIN]: ["getUsers", "manageUsers"],
+  [UserRoleEnum.USER]: [],
 };
 
-export const roles = Object.keys(allRoles);
+const roles = Object.keys(UserRoleEnum);
+const roleRights = new Map<string, string[]>(Object.entries(allRoles));
 
-export const roleRights = new Map<string, string[]>(Object.entries(allRoles));
+export { roles, roleRights };

@@ -5,19 +5,21 @@ import { z } from "zod";
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 export const envVarsSchema = z.object({
-  EMAIL_FROM: z.string(),
+  NODE_ENV: z.enum(["production", "development"]),
+  PORT: z.coerce.number(),
+  MONGODB_URL: z.string(),
+  RATE_LIMIT_INTERVAL_MINUTES: z.coerce.number(),
+  RATE_LIMIT_MAX_REQUESTS: z.coerce.number(),
+  JWT_SECRET: z.string(),
   JWT_ACCESS_EXPIRATION_MINUTES: z.coerce.number(),
   JWT_REFRESH_EXPIRATION_DAYS: z.coerce.number(),
-  JWT_SECRET: z.string(),
-  MONGODB_URL: z.string(),
-  NODE_ENV: z.enum(["production", "development"]),
+  OTP_VERIFY_ACCOUNT_EXPIRATION_MINUTES: z.coerce.number(),
   OTP_RESET_PASSWORD_EXPIRATION_MINUTES: z.coerce.number(),
-  OTP_VERIFY_EMAIL_EXPIRATION_MINUTES: z.coerce.number(),
-  PORT: z.coerce.number(),
   SMTP_HOST: z.string(),
   SMTP_PASSWORD: z.string(),
   SMTP_PORT: z.coerce.number(),
   SMTP_USERNAME: z.string(),
+  EMAIL_FROM: z.string(),
 });
 
 const { data: envVars, error, success } = envVarsSchema.safeParse(process.env);
@@ -39,6 +41,10 @@ export const config = {
     },
   },
   env: envVars.NODE_ENV,
+  rateLimit: {
+    intervalMinutes: envVars.RATE_LIMIT_INTERVAL_MINUTES,
+    maxRequests: envVars.RATE_LIMIT_MAX_REQUESTS,
+  },
   jwt: {
     accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
     refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
@@ -51,7 +57,8 @@ export const config = {
   otp: {
     resetPasswordExpirationMinutes:
       envVars.OTP_RESET_PASSWORD_EXPIRATION_MINUTES,
-    verifyEmailExpirationMinutes: envVars.OTP_VERIFY_EMAIL_EXPIRATION_MINUTES,
+    verifyAccountExpirationMinutes:
+      envVars.OTP_VERIFY_ACCOUNT_EXPIRATION_MINUTES,
   },
   port: envVars.PORT,
 };

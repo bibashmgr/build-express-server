@@ -1,18 +1,13 @@
 import express from "express";
 
 import { userController } from "../../controllers";
-import { authenticate, validate } from "../../middlewares";
 import { userValidation } from "../../validations";
+import { authenticate, validate } from "../../middlewares";
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(
-    authenticate("manageUsers"),
-    validate(userValidation.createUser),
-    userController.createUser
-  )
   .get(
     authenticate("getUsers"),
     validate(userValidation.getUsers),
@@ -27,16 +22,6 @@ router
     authenticate("getUsers"),
     validate(userValidation.getUser),
     userController.getUser
-  )
-  .patch(
-    authenticate("manageUsers"),
-    validate(userValidation.updateUser),
-    userController.updateUser
-  )
-  .delete(
-    authenticate("manageUsers"),
-    validate(userValidation.deleteUser),
-    userController.deleteUser
   );
 
 export default router;

@@ -1,30 +1,28 @@
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import validator from "validator";
 
-import { roles } from "../constants/roles";
-import { IPaginateOptions, paginate, toJSON } from "../plugins";
+import {
+  PaginateOptions,
+  ITimestamps,
+  PaginatedData,
+  IUser,
+  UserResponse,
+  UserRoleEnum,
+} from "../types";
+import { paginate, toJSON } from "../plugins";
 
-export interface IUser extends mongoose.Document {
-  email: string;
-  isEmailVerified: boolean;
-  name: string;
-  password: string;
-  role: string;
-}
-
-export interface IUserMethods {
+interface IUserMethods {
   isPasswordMatch(password: string): Promise<boolean>;
 }
 
 export interface IUserModel
-  extends mongoose.Model<IUser, unknown, IUserMethods> {
-  isEmailTaken(
-    email: string,
-    excludeUserId?: mongoose.Types.ObjectId | string
-  ): Promise<mongoose.HydratedDocument<IUser, IUserMethods>>;
-  paginate: (filter: any, options: IPaginateOptions) => Promise<void>;
-  toJSON: (schema: any) => Promise<void>;
+  extends mongoose.Model<IUser & ITimestamps, unknown, IUserMethods> {
+  isEmailTaken(email: string, excludeUserId?: string): Promise<boolean>;
+  paginate: (
+    filter: any,
+    options: PaginateOptions
+  ) => Promise<PaginatedData<UserResponse>>;
+  toJSON: (schema: any) => Promise<UserResponse>;
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -40,30 +38,22 @@ const userSchema = new mongoose.Schema<IUser>(
       unique: true,
       trim: true,
       lowercase: true,
-      validate(value: string) {
-        if (!validator.isEmail(value)) {
-          throw new Error("Invalid email");
-        }
-      },
     },
     password: {
       type: String,
       required: true,
       trim: true,
-      minlength: 8,
-      validate(value: string) {
-        if (!/\d/.test(value) || !/[a-zA-Z]/.test(value)) {
-          throw new Error(
-            "Password must contain at least one letter and one number"
-          );
-        }
-      },
       private: true,
+      minlength: 8,
     },
     role: {
       type: String,
-      enum: roles,
-      default: "user",
+      enum: Object.values(UserRoleEnum),
+      default: UserRoleEnum.USER,
+    },
+    avatar: {
+      type: String,
+      default: "",
     },
     isEmailVerified: {
       type: Boolean,
@@ -72,6 +62,7 @@ const userSchema = new mongoose.Schema<IUser>(
   },
   {
     timestamps: true,
+    collection: "users",
   }
 );
 
@@ -103,4 +94,11 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-export const User = mongoose.model<IUser, IUserModel>("User", userSchema);
+const userModel = mongoose.model<IUser, IUserModel>("IUser", userSchema);
+
+type HydratedUser = mongoose.HydratedDocument<
+  IUser & ITimestamps,
+  IUserMethods
+>;
+
+export { userModel, type HydratedUser };

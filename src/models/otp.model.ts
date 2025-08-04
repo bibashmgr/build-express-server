@@ -1,34 +1,38 @@
 import mongoose from "mongoose";
 
-import { OtpEnum } from "../types/otp.type";
+import { IOtp, ITimestamps, OtpEnum } from "../types";
 
-export interface IOtp extends mongoose.Document {
-  code: number;
-  expires: Date;
-  type: OtpEnum;
-  user: mongoose.Types.ObjectId;
-}
+export interface IOtpModel extends mongoose.Model<IOtp & ITimestamps> {}
 
-const otpSchema = new mongoose.Schema<IOtp>({
-  code: {
-    type: Number,
-    required: true,
+const otpSchema = new mongoose.Schema<IOtp>(
+  {
+    type: {
+      type: String,
+      enum: [OtpEnum.RESET_PASSWORD, OtpEnum.VERIFY_ACCOUNT],
+      required: true,
+    },
+    code: {
+      type: String,
+      required: true,
+    },
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    expires: {
+      type: Date,
+      required: true,
+    },
   },
-  user: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  type: {
-    type: String,
-    enum: [OtpEnum.RESET_PASSWORD, OtpEnum.VERIFY_EMAIL],
-    required: true,
-  },
-  expires: {
-    type: Date,
-    required: true,
-    default: new Date(),
-  },
-});
+  {
+    timestamps: true,
+    collection: "otps",
+  }
+);
 
-export const OTP = mongoose.model("OTP", otpSchema);
+const otpModel = mongoose.model<IOtp, IOtpModel>("OTP", otpSchema);
+
+type HydratedOtp = mongoose.HydratedDocument<IOtp & ITimestamps>;
+
+export { otpModel, type HydratedOtp };

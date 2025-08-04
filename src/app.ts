@@ -1,23 +1,24 @@
-import compression from "compression";
-import cors from "cors";
-import express from "express";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import httpStatus from "http-status";
+import express from "express";
 import passport from "passport";
+import httpStatus from "http-status";
+import compression from "compression";
+import cors, { CorsOptions } from "cors";
+import rateLimit from "express-rate-limit";
 
-import { config } from "./constants/config";
-import ApiError from "./helpers/ApiError";
-import { errorConverter, errorHandler } from "./middlewares";
 import routes from "./routes/v1";
-import { morganHandler } from "./utils/morgan";
+import { config } from "./constants/config";
+import { ApiError } from "./helpers/apiError";
 import { jwtStrategy } from "./utils/passport";
+import { morgan, errorHandler, errorConverter } from "./middlewares";
 
 const app = express();
 
-app.use(morganHandler.successHandler);
-app.use(morganHandler.errorHandler);
+// middleware for logging
+app.use(morgan.successHandler);
+app.use(morgan.errorHandler);
 
+// sets various HTTP headers
 app.use(helmet());
 
 // parse json request body
@@ -30,23 +31,33 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
 // enable cors
-app.use(cors());
-app.options("*", cors());
+const corsOptions: CorsOptions = {
+  origin: "*",
+  methods: "GET,POST,PATCH,DELETE,OPTIONS",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
-// jwt authentication
+// // jwt authentication
 app.use(passport.initialize());
 passport.use("jwt", jwtStrategy);
 
-// limit repeated failed requests to auth endpoints
+// limit repeated requests to given endpoints
 if (config.env === "production") {
-  app.use(
-    "/v1/auth",
-    rateLimit({
-      max: 20,
-      skipSuccessfulRequests: true,
-      windowMs: 15 * 60 * 1000,
-    })
-  );
+  const defaultLimiter = rateLimit({
+    windowMs: config.rateLimit.intervalMinutes * 60 * 1000,
+    limit: config.rateLimit.maxRequests,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      message: "Too many requests, please try again later",
+    },
+  });
+  const limitedPaths = ["/v1/health", "/v1/auth"];
+
+  limitedPaths.forEach((path) => {
+    app.use(path, defaultLimiter);
+  });
 }
 
 // api-routes

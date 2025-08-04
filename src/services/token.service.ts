@@ -1,99 +1,106 @@
-import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
-import moment from "moment";
-import mongoose from "mongoose";
+import httpStatus from "http-status";
+import { addDays, addMinutes, getUnixTime } from "date-fns";
 
+import { TokenEnum } from "../types";
+import { tokenModel } from "../models";
 import { config } from "../constants/config";
-import ApiError from "../helpers/ApiError";
-import { Token } from "../models";
-import { TokenEnum } from "../types/token.type";
+import { ApiError } from "../helpers/apiError";
 
 // This function generates a particular type of token
-const generateToken = (
-  userId: mongoose.Types.ObjectId,
-  expires: moment.Moment,
+function generateToken(
+  userId: string,
+  expires: number,
   type: string,
-  secret: string = config.jwt.secret
-) => {
+  secret: string
+) {
   const payload = {
-    exp: expires.unix(),
-    iat: moment().unix(),
+    exp: expires,
+    iat: getUnixTime(new Date()),
     sub: userId,
     type,
   };
   return jwt.sign(payload, secret);
-};
+}
 
 // This function saves the generated token in database
-const saveToken = async (
+async function saveToken(
   token: string,
-  userId: mongoose.Types.ObjectId,
-  expires: moment.Moment,
-  type: string,
+  userId: string,
+  expires: Date,
+  type: TokenEnum,
   blacklisted = false
-) => {
-  const tokenDoc = await Token.create({
-    blacklisted,
-    expires: expires.toDate(),
-    token,
+) {
+  const tokenDoc = await tokenModel.create({
     type,
+    token,
     user: userId,
+    expires,
+    blacklisted,
   });
   return tokenDoc;
-};
+}
+
+// This function generates authentication tokens
+async function generateAuthTokens(userId: string) {
+  const accessTokenExpires = addMinutes(
+    new Date(),
+    config.jwt.accessExpirationMinutes
+  );
+  const accessToken = generateToken(
+    userId,
+    getUnixTime(accessTokenExpires),
+    TokenEnum.ACCESS,
+    config.jwt.secret
+  );
+
+  const refreshTokenExpires = addDays(
+    new Date(),
+    config.jwt.refreshExpirationDays
+  );
+  const refreshToken = generateToken(
+    userId,
+    getUnixTime(refreshTokenExpires),
+    TokenEnum.REFRESH,
+    config.jwt.secret
+  );
+
+  await saveToken(refreshToken, userId, refreshTokenExpires, TokenEnum.REFRESH);
+
+  return {
+    access: {
+      expires: accessTokenExpires,
+      token: accessToken,
+    },
+    refresh: {
+      expires: refreshTokenExpires,
+      token: refreshToken,
+    },
+  };
+}
 
 // This function verifies whether the token is valid or not
-export const verifyToken = async (token: string, type: TokenEnum) => {
+async function verifyToken(token: string, type: TokenEnum) {
   const payload = jwt.verify(token, config.jwt.secret);
-  const tokenDoc = await Token.findOne({
+  const tokenDoc = await tokenModel.findOne({
     blacklisted: false,
     token,
     type,
     user: payload.sub,
   });
+
   if (!tokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, "Token Not Found");
   }
   return tokenDoc;
-};
+}
 
-// This function generates authentication tokens
-export const generateAuthTokens = async (user: any) => {
-  const accessTokenExpires = moment().add(
-    config.jwt.accessExpirationMinutes,
-    "minutes"
-  );
-  const accessToken = generateToken(
-    user.id,
-    accessTokenExpires,
-    TokenEnum.ACCESS
-  );
+// This function delete all the tokens associated with the given userId
+async function deleteTokensByUserId(userId: string, type: TokenEnum) {
+  return await tokenModel.deleteMany({
+    type,
+    user: userId,
+  });
+}
 
-  const refreshTokenExpires = moment().add(
-    config.jwt.refreshExpirationDays,
-    "days"
-  );
-  const refreshToken = generateToken(
-    user.id,
-    refreshTokenExpires,
-    TokenEnum.REFRESH
-  );
-
-  await saveToken(
-    refreshToken,
-    user.id,
-    refreshTokenExpires,
-    TokenEnum.REFRESH
-  );
-
-  return {
-    access: {
-      expires: accessTokenExpires.toDate(),
-      token: accessToken,
-    },
-    refresh: {
-      expires: refreshTokenExpires.toDate(),
-      token: refreshToken,
-    },
-  };
-};
+export { generateAuthTokens, verifyToken, deleteTokensByUserId };

@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
 
-import { TokenEnum } from "../types/token.type";
+import { ITimestamps, IToken, TokenEnum } from "../types";
 
-export interface IToken extends mongoose.Document {
-  blacklisted: boolean;
-  expires: Date;
-  token: string;
-  type: TokenEnum;
-  user: mongoose.Types.ObjectId;
-}
+export interface ITokenModel extends mongoose.Model<IToken & ITimestamps> {}
 
 const tokenSchema = new mongoose.Schema<IToken>(
   {
+    type: {
+      type: String,
+      enum: [TokenEnum.REFRESH],
+      required: true,
+    },
     token: {
       type: String,
       required: true,
@@ -22,23 +21,19 @@ const tokenSchema = new mongoose.Schema<IToken>(
       ref: "User",
       required: true,
     },
-    type: {
-      type: String,
-      enum: [TokenEnum.REFRESH],
-      required: true,
-    },
     expires: {
       type: Date,
       required: true,
     },
-    blacklisted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
+    collection: "tokens",
   }
 );
 
-export const Token = mongoose.model<IToken>("Token", tokenSchema);
+const tokenModel = mongoose.model<IToken, ITokenModel>("Token", tokenSchema);
+
+type HydratedToken = mongoose.HydratedDocument<IToken & ITimestamps>;
+
+export { tokenModel, type HydratedToken };

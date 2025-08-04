@@ -1,104 +1,87 @@
-import moment from "moment";
-import nodemailer from "nodemailer";
+import path from "path";
+import { readFileSync } from "fs";
+import { format } from "date-fns";
+import Mail, { Address } from "nodemailer/lib/mailer";
 
-import { config } from "../constants/config";
 import { logger } from "../utils/logger";
+import { EmailTypeEnum } from "../types";
+import Handlebars from "../utils/hadlebars";
+import { config } from "../constants/config";
+import { transport } from "../utils/nodemailer";
 
-const transport = nodemailer.createTransport(config.email.smtp);
+// This function returns an email template based on the specified email type and context.
+function getEmailTemplate(type: EmailTypeEnum, context: any = {}) {
+  let source: string = "";
 
-transport
-  .verify()
-  .then(() => logger.info("Connected to email server"))
-  .catch(() =>
-    logger.warn(
-      "Unable to connect to email server. Make sure you have configured the SMTP options in .env"
-    )
-  );
+  switch (type) {
+    case EmailTypeEnum.ACCOUNT_VERIFICATION_EMAIL:
+      source = readFileSync(
+        path.join(__dirname, "../templates/accountVerification.template.html"),
+        "utf-8"
+      );
+      break;
 
-// This function returns html content
-const generateHtmlContent = (
-  title: string,
-  code: number,
-  expirationMins: number
-) => {
-  return `<body style="margin:0; font-family:'Poppins',sans-serif; background:#ffffff; font-size:14px;">
-    <div style="max-width:680px; margin:0 auto; padding:45px 30px 60px; background:#4fd1c5; font-size:14px; color:#434343;"
-    >
-      <header>
-        <table style="width:100%;">
-          <tbody>
-            <tr style="height:0;">
-              <td>
-                <h1 style="font-size:24px; color: #ffffff;">Logo</h1>
-              </td>
-              <td style="text-align:right;">
-                <span style="font-size:16px; line-height:30px; color:#ffffff;">${moment().format(
-                  "DD MMM, YYYY"
-                )}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </header>
-      <main>
-        <div style="margin:0; margin-top:70px; padding:92px 30px 115px; background:#ffffff;border-radius:30px; text-align:center;">
-          <div style="width:100%; max-width:489px; margin:0 auto;">
-            <h1 style="margin:0; font-size:24px; font-weight:500; color:#1f1f1f; text-transform:capitalize;">
-              ${title}
-            </h1>
-            <p style="margin:0; margin-top:17px; font-weight:500; letter-spacing:0.56px;">
-              Use the following OTP to complete the procedure to ${title} for your account. OTP is valid for ${String(expirationMins)} minutes. Do not share this code with others.
-            </p>
-            <p style="margin:0; margin-top:60px; font-size:32px; font-weight:600; letter-spacing:25px; color:#319795;">
-              ${String(code)}
-            </p>
-          </div>
-        </div>
-        <p style="max-width: 400px; margin: 0 auto; margin-top: 90px; text-align: center; font-weight: 500; color: #ffffff;">
-          Need help? Ask at
-          <a href="mailto:support.brand@gmail.com" style="color: #319795; text-decoration: none;">
-            support.brand@gmail.com
-          </a>
-          or visit our
-          <a href="https://yourbrand.com/help-center" target="_blank" style="color: #319795; text-decoration: none;">Help Center</a>
-        </p>
-      </main>
-      <footer style=" width: 100%; max-width: 490px; margin: 20px auto 0; text-align: center; border-top: 1px solid #e6ebf1;">        
-        <p style="margin: 0; margin-top: 16px; color: #ffffff;">
-          Copyright © ${String(new Date().getFullYear())} Your Brand. All rights reserved.
-        </p>
-      </footer>
-    </div>
-  </body>
-  `;
-};
+    case EmailTypeEnum.RESET_PASSWORD_EMAIL:
+      source = readFileSync(
+        path.join(__dirname, "../templates/resetPassword.template.html"),
+        "utf-8"
+      );
+      break;
+  }
 
-// This function sends email to a paticular email account
-const sendEmail = async (to: string, subject: string, html: string) => {
-  const msg = { from: config.email.from, html, subject, to };
-  await transport.sendMail(msg);
-};
+  const template = Handlebars.compile(source);
+  return template(context, {
+    allowProtoPropertiesByDefault: true,
+  });
+}
 
-// This function sends email for resetting password
-export const sendResetPasswordEmail = async (to: string, code: number) => {
-  const subject = "Reset Password";
-  const html = generateHtmlContent(
-    "reset password",
-    code,
-    config.otp.resetPasswordExpirationMinutes
-  );
-
-  await sendEmail(to, subject, html);
-};
+// This function sends an email with the specified sender, recipients, subject, and HTML content
+async function sendEmail(
+  from: string | Address,
+  to: string | Address | string[] | Address[],
+  subject: string,
+  html: string
+) {
+  const options: Mail.Options = { from, html, subject, to };
+  await transport.sendMail(options);
+}
 
 // This function sends email for verifying email
-export const sendVerificationEmail = async (to: string, code: number) => {
-  const subject = "Email Verification";
-  const html = generateHtmlContent(
-    "verify email",
-    code,
-    config.otp.verifyEmailExpirationMinutes
-  );
+async function sendAccountVerificationEmail(to: string, code: string) {
+  try {
+    const from = {
+      name: "Your App",
+      address: config.email.from,
+    };
+    const subject = "Account Verification";
+    const html = getEmailTemplate(EmailTypeEnum.ACCOUNT_VERIFICATION_EMAIL, {
+      code,
+      expirationMinutes: config.otp.verifyAccountExpirationMinutes,
+    });
+    await sendEmail(from, to, subject, html);
+  } catch (error: unknown) {
+    logger.error(error);
+  }
+}
 
-  await sendEmail(to, subject, html);
-};
+// This function sends email for resetting password
+async function sendResetPasswordEmail(to: string, code: string) {
+  try {
+    const from = {
+      name: "Your App",
+      address: config.email.from,
+    };
+    const subject = "Reset Password";
+    const html = getEmailTemplate(EmailTypeEnum.RESET_PASSWORD_EMAIL, {
+      code,
+      expirationMinutes: config.otp.resetPasswordExpirationMinutes,
+      date: format(new Date(), "dd MMM, yyyy"),
+      year: format(new Date(), "yyyy"),
+    });
+    await sendEmail(from, to, subject, html);
+  } catch (error: unknown) {
+    logger.error(error);
+  }
+}
+
+export { sendAccountVerificationEmail, sendResetPasswordEmail };
