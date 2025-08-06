@@ -109,9 +109,13 @@ type ResetPasswordRequest = z.infer<typeof resetPassword>;
 
 const refreshToken = z.object({
   body: z.object({
-    refreshToken: z.string({
-      message: "Refresh Token is required",
-    }),
+    refreshToken: z
+      .string({
+        message: "Refresh Token is required",
+      })
+      .nonempty({
+        message: "Refresh token must not be empty",
+      }),
   }),
 });
 
@@ -119,9 +123,13 @@ type RefreshTokenRequest = z.infer<typeof refreshToken>;
 
 const logoutUser = z.object({
   body: z.object({
-    refreshToken: z.string({
-      message: "Refresh Token is required",
-    }),
+    refreshToken: z
+      .string({
+        message: "Refresh token is required",
+      })
+      .nonempty({
+        message: "Refresh token must not be empty",
+      }),
   }),
 });
 

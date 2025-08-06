@@ -22,8 +22,6 @@ const verifyCallback =
       return reject(new ApiError(statusCode, message));
     }
 
-    req.user = user;
-
     if (requiredRights.length) {
       const userRights = roleRights.get(user.role) ?? [];
       const hasRequiredRights = requiredRights.every((requiredRight) =>
@@ -34,6 +32,8 @@ const verifyCallback =
         return reject(new ApiError(httpStatus.FORBIDDEN, "Access denied"));
       }
     }
+
+    req.user = user;
 
     resolve();
   };

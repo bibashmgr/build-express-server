@@ -25,6 +25,10 @@ const tokenSchema = new mongoose.Schema<IToken>(
       type: Date,
       required: true,
     },
+    blacklisted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

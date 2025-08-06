@@ -6,8 +6,9 @@ export enum TokenEnum {
 }
 
 export interface IToken {
-  expires: Date;
-  token: string;
   type: TokenEnum;
+  token: string;
   user: mongoose.Types.ObjectId;
+  expires: Date;
+  blacklisted: boolean;
 }

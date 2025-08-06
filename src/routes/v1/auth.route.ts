@@ -7,7 +7,7 @@ import { authValidation } from "../../validations";
 const router = express.Router();
 
 router.post(
-  "/signup",
+  "/register",
   validate(authValidation.registerUser),
   authController.registerUser
 );

@@ -34,9 +34,14 @@ async function queryUsers(
 
 // This function finds existing user by userID and updates it.
 async function updateUserById(id: string, payload: UpdateUserPayload) {
-  return await userModel.findByIdAndUpdate(id, payload, {
-    new: true,
-  });
+  const user = await getUserById(id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  Object.assign(user, payload);
+  await user.save();
+  return user;
 }
 
 export { createUser, getUserByEmail, getUserById, queryUsers, updateUserById };

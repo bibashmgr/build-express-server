@@ -5,9 +5,8 @@ import httpStatus from "http-status";
 import { ApiError } from "../helpers/apiError";
 
 // This middleware validates request data with given zod schema
-export const validate =
-  (schema: ZodObject) =>
-  (
+function validate(schema: ZodObject) {
+  return (
     req: express.Request,
     _res: express.Response,
     next: express.NextFunction
@@ -21,6 +20,25 @@ export const validate =
       return next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
     }
 
-    Object.assign(req, data);
+    if ("body" in data) {
+      req.body = data.body;
+    }
+
+    if ("params" in data) {
+      req.params = data.params as any;
+    }
+
+    if ("query" in data) {
+      Object.defineProperty(req, "query", {
+        value: data.query,
+        writable: false,
+        configurable: true,
+        enumerable: true,
+      });
+    }
+
     return next();
   };
+}
+
+export { validate };

@@ -83,10 +83,10 @@ async function generateAuthTokens(userId: string) {
 async function verifyToken(token: string, type: TokenEnum) {
   const payload = jwt.verify(token, config.jwt.secret);
   const tokenDoc = await tokenModel.findOne({
-    blacklisted: false,
     token,
     type,
     user: payload.sub,
+    blacklisted: false,
   });
 
   if (!tokenDoc) {
