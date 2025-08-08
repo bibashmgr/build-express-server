@@ -25,7 +25,7 @@ export const envVarsSchema = z.object({
 const { data: envVars, error, success } = envVarsSchema.safeParse(process.env);
 
 if (!success) {
-  throw new Error(`Config validation error: ${String(error)}`);
+  throw new Error(`Config validation error: ${JSON.stringify(error)}`);
 }
 
 export const config = {

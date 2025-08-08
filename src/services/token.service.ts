@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import httpStatus from "http-status";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { addDays, addMinutes, getUnixTime } from "date-fns";
 
 import { TokenEnum } from "../types";
@@ -17,7 +17,7 @@ function generateToken(
   const payload = {
     exp: expires,
     iat: getUnixTime(new Date()),
-    sub: userId,
+    user: userId,
     type,
   };
   return jwt.sign(payload, secret);
@@ -81,11 +81,11 @@ async function generateAuthTokens(userId: string) {
 
 // This function verifies whether the token is valid or not
 async function verifyToken(token: string, type: TokenEnum) {
-  const payload = jwt.verify(token, config.jwt.secret);
+  const payload = jwt.verify(token, config.jwt.secret) as JwtPayload;
   const tokenDoc = await tokenModel.findOne({
     token,
     type,
-    user: payload.sub,
+    user: payload.user,
     blacklisted: false,
   });
 

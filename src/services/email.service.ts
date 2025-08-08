@@ -11,7 +11,7 @@ import { transport } from "../utils/nodemailer";
 
 // This function returns an email template based on the specified email type and context.
 function getEmailTemplate(type: EmailTypeEnum, context: any = {}) {
-  let source: string = "";
+  let source = "";
 
   switch (type) {
     case EmailTypeEnum.ACCOUNT_VERIFICATION_EMAIL:

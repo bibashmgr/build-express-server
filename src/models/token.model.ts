@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import { ITimestamps, IToken, TokenEnum } from "../types";
 
-export interface ITokenModel extends mongoose.Model<IToken & ITimestamps> {}
+type ITokenModel = mongoose.Model<IToken & ITimestamps>;
 
 const tokenSchema = new mongoose.Schema<IToken>(
   {

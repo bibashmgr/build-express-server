@@ -19,7 +19,7 @@ async function jwtVerify(payload: any, done: VerifiedCallback) {
       throw new Error("Invalid token type");
     }
 
-    const user = await userService.getUserById(payload.sub);
+    const user = await userService.getUserById(payload.user);
     if (!user) {
       return done(null, false);
     }

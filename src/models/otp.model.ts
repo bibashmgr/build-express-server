@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import { IOtp, ITimestamps, OtpEnum } from "../types";
 
-export interface IOtpModel extends mongoose.Model<IOtp & ITimestamps> {}
+type IOtpModel = mongoose.Model<IOtp & ITimestamps>;
 
 const otpSchema = new mongoose.Schema<IOtp>(
   {

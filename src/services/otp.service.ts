@@ -63,7 +63,7 @@ async function generateResetPasswordOtp(userId: string) {
 
 // This function verifies whether the otp is valid or not
 async function verifyOtp(userId: string, code: string, type: OtpEnum) {
-  const [otpDoc] = await otpModel
+  const optDocs = await otpModel
     .find({
       user: userId,
       type,
@@ -71,9 +71,11 @@ async function verifyOtp(userId: string, code: string, type: OtpEnum) {
     .sort({ createdAt: -1 })
     .limit(1);
 
-  if (!otpDoc) {
+  if (optDocs.length === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, "OTP not found");
   }
+
+  const otpDoc = optDocs[0];
 
   if (otpDoc.code !== code) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Invalid OTP");

@@ -5,7 +5,8 @@ import { logger } from "../utils/logger";
 import { config } from "../constants/config";
 
 morgan.token("message", (_req: express.Request, res: express.Response) => {
-  return res.locals.errorMessage ?? "";
+  const message = res.locals.errorMessage;
+  return typeof message === "string" ? message : "";
 });
 
 const getIpFormat = () =>

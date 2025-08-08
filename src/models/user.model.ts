@@ -15,7 +15,7 @@ interface IUserMethods {
   isPasswordMatch(password: string): Promise<boolean>;
 }
 
-export interface IUserModel
+interface IUserModel
   extends mongoose.Model<IUser & ITimestamps, unknown, IUserMethods> {
   isEmailTaken(email: string, excludeUserId?: string): Promise<boolean>;
   paginate: (
