@@ -7,12 +7,12 @@ import { config } from "../constants/config";
 import { ApiError } from "../helpers/apiError";
 
 // This middlware converts Error into ApiError
-export const errorConverter = (
+function errorConverter(
   err: any,
   _req: express.Request,
   _res: express.Response,
   next: express.NextFunction
-) => {
+) {
   let error = err;
 
   if (!(error instanceof ApiError)) {
@@ -25,15 +25,15 @@ export const errorConverter = (
   }
 
   next(error);
-};
+}
 
 // This middleware formats ApiError into JSON
-export const errorHandler = (
+function errorHandler(
   err: any,
   _req: express.Request,
   res: express.Response,
   _next: express.NextFunction
-) => {
+) {
   let { message, statusCode } = err;
 
   if (config.env === "production" && !err.isOperational) {
@@ -53,4 +53,6 @@ export const errorHandler = (
   }
 
   res.status(statusCode).send(response);
-};
+}
+
+export { errorConverter, errorHandler };

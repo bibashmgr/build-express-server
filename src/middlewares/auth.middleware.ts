@@ -6,14 +6,13 @@ import { HydratedUser } from "../models";
 import { ApiError } from "../helpers/apiError";
 import { roleRights } from "../constants/roles";
 
-const verifyCallback =
-  (
-    req: express.Request,
-    resolve: (value?: unknown) => void,
-    reject: (reason: any) => void,
-    requiredRights: string[]
-  ) =>
-  (err: any, user: HydratedUser | null, info: any) => {
+function verifyCallback(
+  req: express.Request,
+  resolve: (value?: unknown) => void,
+  reject: (reason: any) => void,
+  requiredRights: string[]
+) {
+  return (err: any, user: HydratedUser | null, info: any) => {
     if (err || info || !user) {
       const isTokenExpired = info?.message === "jwt expired";
       const message = isTokenExpired ? "Token expired" : "Please authenticate";
@@ -37,10 +36,10 @@ const verifyCallback =
 
     resolve();
   };
+}
 
-export const authenticate =
-  (...requiredRights: string[]) =>
-  async (
+function authenticate(...requiredRights: string[]) {
+  return async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
@@ -55,3 +54,6 @@ export const authenticate =
       .then(() => next())
       .catch((err: unknown) => next(err));
   };
+}
+
+export { authenticate };
