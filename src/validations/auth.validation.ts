@@ -32,6 +32,9 @@ const registerUser = z.object({
       .trim()
       .min(2, {
         message: "Name must be at least 2 characters",
+      })
+      .max(50, {
+        message: "Name must not be longer than 50 characters",
       }),
     password: passwordSchema,
   }),
