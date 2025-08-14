@@ -1,9 +1,11 @@
-import xss from "xss";
 import express from "express";
+import sanitizeHtml from "sanitize-html";
 
 function sanitize(data: any): any {
   if (typeof data === "string") {
-    return xss(data);
+    return sanitizeHtml(data, {
+      disallowedTagsMode: "escape",
+    });
   } else if (Array.isArray(data)) {
     return data.map(sanitize);
   } else if (data && typeof data === "object") {
