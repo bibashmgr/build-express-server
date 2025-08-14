@@ -6,11 +6,16 @@ import compression from "compression";
 import cors, { CorsOptions } from "cors";
 import rateLimit from "express-rate-limit";
 
+import {
+  morgan,
+  errorHandler,
+  errorConverter,
+  xssSanitize,
+} from "./middlewares";
 import routes from "./routes/v1";
 import { config } from "./constants/config";
 import { ApiError } from "./helpers/apiError";
 import { jwtStrategy } from "./utils/passport";
-import { morgan, errorHandler, errorConverter } from "./middlewares";
 
 const app = express();
 
@@ -26,6 +31,9 @@ app.use(express.json());
 
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
+
+// sanitize request data
+app.use(xssSanitize());
 
 // gzip compression
 app.use(compression());
