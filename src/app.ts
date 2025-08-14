@@ -11,6 +11,7 @@ import {
   errorHandler,
   errorConverter,
   xssSanitize,
+  mongoSanitize,
 } from "./middlewares";
 import routes from "./routes/v1";
 import { config } from "./constants/config";
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // sanitize request data
 app.use(xssSanitize());
+app.use(mongoSanitize());
 
 // gzip compression
 app.use(compression());
