@@ -6,7 +6,7 @@ A CLI tool to scaffold a ready-to-use Expressjs project boilerplate with modern 
 You don’t need to install anything globally. Just run:
 
 ```bash
-npx build-express-server my-server
+npx build-express-server@latest my-server
 ```
 
 Then:
