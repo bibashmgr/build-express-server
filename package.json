@@ -3,7 +3,7 @@
   "description": "CLI tool to quickly generate a Expressjs + TypeScript project boilerplate.",
   "private": false,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Bibash Thapa Magar <bibashmgr>",
   "license": "MIT",
   "keywords": [
