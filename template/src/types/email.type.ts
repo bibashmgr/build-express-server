@@ -1,4 +1,4 @@
 export enum EmailTypeEnum {
-  ACCOUNT_VERIFICATION_EMAIL = "ACCOUNT_VERIFICATION_EMAIL",
-  RESET_PASSWORD_EMAIL = "RESET_PASSWORD_EMAIL",
+  VERIFY_ACCOUNT = "verify_account",
+  RESET_PASSWORD = "reset_password",
 }

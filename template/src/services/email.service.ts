@@ -14,14 +14,14 @@ function getEmailTemplate(type: EmailTypeEnum, context: any = {}) {
   let source = "";
 
   switch (type) {
-    case EmailTypeEnum.ACCOUNT_VERIFICATION_EMAIL:
+    case EmailTypeEnum.VERIFY_ACCOUNT:
       source = readFileSync(
         path.join(__dirname, "../templates/accountVerification.template.html"),
         "utf-8"
       );
       break;
 
-    case EmailTypeEnum.RESET_PASSWORD_EMAIL:
+    case EmailTypeEnum.RESET_PASSWORD:
       source = readFileSync(
         path.join(__dirname, "../templates/resetPassword.template.html"),
         "utf-8"
@@ -54,7 +54,7 @@ async function sendAccountVerificationEmail(to: string, code: string) {
       address: config.email.from,
     };
     const subject = "Account Verification";
-    const html = getEmailTemplate(EmailTypeEnum.ACCOUNT_VERIFICATION_EMAIL, {
+    const html = getEmailTemplate(EmailTypeEnum.VERIFY_ACCOUNT, {
       code,
       expirationMinutes: config.otp.verifyAccountExpirationMinutes,
     });
@@ -72,7 +72,7 @@ async function sendResetPasswordEmail(to: string, code: string) {
       address: config.email.from,
     };
     const subject = "Reset Password";
-    const html = getEmailTemplate(EmailTypeEnum.RESET_PASSWORD_EMAIL, {
+    const html = getEmailTemplate(EmailTypeEnum.RESET_PASSWORD, {
       code,
       expirationMinutes: config.otp.resetPasswordExpirationMinutes,
       date: format(new Date(), "dd MMM, yyyy"),
