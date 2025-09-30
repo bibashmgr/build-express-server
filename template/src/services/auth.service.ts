@@ -1,9 +1,11 @@
 import httpStatus from "http-status";
 
+import { logger } from "../utils/logger";
 import * as otpService from "./otp.service";
 import * as userService from "./user.service";
 import { OtpEnum, TokenEnum } from "../types";
 import { ApiError } from "../helpers/apiError";
+import { runAsync } from "../helpers/runAsync";
 import { authValidation } from "../validations";
 import * as tokenService from "./token.service";
 import * as emailService from "./email.service";
@@ -13,9 +15,31 @@ async function registerUser(
   payload: authValidation.RegisterUserRequest["body"]
 ) {
   const user = await userService.createUser(payload);
-  const optDoc = await otpService.generateVerifyAccountOtp(user.id);
-  await emailService.sendAccountVerificationEmail(user.email, optDoc.code);
+  const otpCode = await otpService.generateVerifyAccountOtp(user.id);
+  runAsync(
+    emailService.sendAccountVerificationEmail(user.email, otpCode),
+    "Failed to send verification email"
+  );
   return null;
+}
+
+// This function logins user by email & password
+async function loginUser(payload: authValidation.LoginUserRequest["body"]) {
+  const user = await userService.getUserByEmail(payload.email);
+
+  if (!user || !(await user.isPasswordMatch(payload.password))) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials");
+  }
+
+  if (!user.isEmailVerified) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Account not verified");
+  }
+
+  const tokens = await tokenService.generateAuthTokens(user.id);
+  return {
+    account: user,
+    tokens,
+  };
 }
 
 // This function generates a verify account OTP for the user identified by email
@@ -32,8 +56,11 @@ async function sendAccountVerificationCode(
     throw new ApiError(httpStatus.FORBIDDEN, "Account already verified");
   }
 
-  const optDoc = await otpService.generateVerifyAccountOtp(user.id);
-  await emailService.sendAccountVerificationEmail(user.email, optDoc.code);
+  const otpCode = await otpService.generateVerifyAccountOtp(user.id);
+  runAsync(
+    emailService.sendAccountVerificationEmail(user.email, otpCode),
+    "Failed to send verification email"
+  );
   return null;
 }
 
@@ -59,25 +86,6 @@ async function verifyAccount(
   return null;
 }
 
-// This function logins user by email & password
-async function loginUser(payload: authValidation.LoginUserRequest["body"]) {
-  const user = await userService.getUserByEmail(payload.email);
-
-  if (!user || !(await user.isPasswordMatch(payload.password))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials");
-  }
-
-  if (!user.isEmailVerified) {
-    throw new ApiError(httpStatus.FORBIDDEN, "Account not verified");
-  }
-
-  const tokens = await tokenService.generateAuthTokens(user.id);
-  return {
-    account: user,
-    tokens,
-  };
-}
-
 // This function generates a reset password OTP for the user identified by email
 async function forgotPassword(
   payload: authValidation.ForgotPasswordRequest["body"]
@@ -88,8 +96,11 @@ async function forgotPassword(
     throw new ApiError(httpStatus.NOT_FOUND, "No user found");
   }
 
-  const otpDoc = await otpService.generateResetPasswordOtp(user.id);
-  await emailService.sendResetPasswordEmail(user.email, otpDoc.code);
+  const otpCode = await otpService.generateResetPasswordOtp(user.id);
+  runAsync(
+    emailService.sendResetPasswordEmail(user.email, otpCode),
+    "Failed to send forgot password email"
+  );
   return null;
 }
 
@@ -156,9 +167,9 @@ async function logoutUser(payload: authValidation.LogoutUserRequest["body"]) {
 
 export {
   registerUser,
+  loginUser,
   sendAccountVerificationCode,
   verifyAccount,
-  loginUser,
   forgotPassword,
   resetPassword,
   refreshToken,

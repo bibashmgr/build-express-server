@@ -42,7 +42,8 @@ async function generateVerifyAccountOtp(userId: string) {
   );
   const verifyEmailOtp = generateOtp();
 
-  return await saveOtp(verifyEmailOtp, userId, OtpEnum.VERIFY_ACCOUNT, expires);
+  await saveOtp(verifyEmailOtp, userId, OtpEnum.VERIFY_ACCOUNT, expires);
+  return verifyEmailOtp;
 }
 
 // This function generate otp for resetting password
@@ -53,12 +54,8 @@ async function generateResetPasswordOtp(userId: string) {
   );
   const resetPasswordOtp = generateOtp();
 
-  return await saveOtp(
-    resetPasswordOtp,
-    userId,
-    OtpEnum.RESET_PASSWORD,
-    expires
-  );
+  await saveOtp(resetPasswordOtp, userId, OtpEnum.RESET_PASSWORD, expires);
+  return resetPasswordOtp;
 }
 
 // This function verifies whether the otp is valid or not
@@ -77,7 +74,7 @@ async function verifyOtp(userId: string, code: string, type: OtpEnum) {
 
   const otpDoc = optDocs[0];
 
-  if (otpDoc.code !== code) {
+  if (!(await otpDoc.isCodeMatch(code))) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Invalid OTP");
   }
 

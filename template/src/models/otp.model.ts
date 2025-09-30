@@ -1,8 +1,13 @@
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
 import { IOtp, ITimestamps, OtpEnum } from "../types";
 
-type IOtpModel = mongoose.Model<IOtp & ITimestamps>;
+interface IOtpMethods {
+  isCodeMatch(code: string): Promise<boolean>;
+}
+
+type IOtpModel = mongoose.Model<IOtp & ITimestamps, unknown, IOtpMethods>;
 
 const otpSchema = new mongoose.Schema<IOtp>(
   {
@@ -30,6 +35,17 @@ const otpSchema = new mongoose.Schema<IOtp>(
     collection: "otps",
   }
 );
+
+otpSchema.method("isCodeMatch", async function isCodeMatch(password: string) {
+  return bcrypt.compare(password, this.code);
+});
+
+otpSchema.pre("save", async function (next) {
+  if (this.isModified("code")) {
+    this.code = await bcrypt.hash(this.code, 8);
+  }
+  next();
+});
 
 const otpModel = mongoose.model<IOtp, IOtpModel>("OTP", otpSchema);
 
