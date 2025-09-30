@@ -1,8 +1,8 @@
 import express from "express";
 
-import { validate } from "../../middlewares";
 import { authController } from "../../controllers";
 import { authValidation } from "../../validations";
+import { authenticate, validate } from "../../middlewares";
 
 const router = express.Router();
 
@@ -50,6 +50,7 @@ router.post(
 
 router.post(
   "/logout",
+  authenticate(),
   validate(authValidation.logoutUser),
   authController.logoutUser
 );

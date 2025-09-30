@@ -5,6 +5,11 @@ export enum UserRoleEnum {
   USER = "user",
 }
 
+export enum UserRightEnum {
+  GET_USERS = "get_users",
+  MANAGE_USERS = "manage_users",
+}
+
 export interface IUser {
   name: string;
   email: string;

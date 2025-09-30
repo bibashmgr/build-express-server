@@ -1,7 +1,7 @@
-import { UserRoleEnum } from "../types";
+import { UserRightEnum, UserRoleEnum } from "../types";
 
 const allRoles: Record<UserRoleEnum, string[]> = {
-  [UserRoleEnum.ADMIN]: ["getUsers", "manageUsers"],
+  [UserRoleEnum.ADMIN]: [UserRightEnum.GET_USERS, UserRightEnum.MANAGE_USERS],
   [UserRoleEnum.USER]: [],
 };
 
