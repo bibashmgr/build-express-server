@@ -5,7 +5,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "eslint.config.mjs"],
+    ignores: ["dist", "node_modules", "eslint.config.mjs"],
   },
   { files: ["src/**/*.{js,ts}"] },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
